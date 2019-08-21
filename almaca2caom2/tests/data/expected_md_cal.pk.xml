@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:CompositeObservation" caom2:id="208a69d4-f3c0-4597-9e6d-13c404e1f958">
+  <caom2:collection>ALMACA</caom2:collection>
+  <caom2:observationID>A002_Xb945f7_X1551.CAL.J1924-2914</caom2:observationID>
+  <caom2:metaRelease>2016-10-12T00:55:56.000</caom2:metaRelease>
+  <caom2:algorithm>
+    <caom2:name>target splitting</caom2:name>
+  </caom2:algorithm>
+  <caom2:type>OBJECT</caom2:type>
+  <caom2:intent>calibration</caom2:intent>
+  <caom2:proposal>
+    <caom2:id>2016.1.00010.S</caom2:id>
+    <caom2:pi>Koda, Jin</caom2:pi>
+    <caom2:project>uid://A001/X3ab/X10</caom2:project>
+    <caom2:title>Resolving GMCs using CO Absorption Toward Compact QSOs Directly Behind the MW Disk</caom2:title>
+    <caom2:keywords>
+      <caom2:keyword>(ISM)/Molecular</caom2:keyword>
+      <caom2:keyword>clouds</caom2:keyword>
+      <caom2:keyword>Inter-Stellar</caom2:keyword>
+      <caom2:keyword>Medium</caom2:keyword>
+    </caom2:keywords>
+  </caom2:proposal>
+  <caom2:target>
+    <caom2:name>J1924-2914</caom2:name>
+    <caom2:type>object</caom2:type>
+    <caom2:standard>false</caom2:standard>
+    <caom2:moving>false</caom2:moving>
+  </caom2:target>
+  <caom2:telescope>
+    <caom2:name>ALMA-12m</caom2:name>
+    <caom2:geoLocationX>2225142.18</caom2:geoLocationX>
+    <caom2:geoLocationY>-5440307.37</caom2:geoLocationY>
+    <caom2:geoLocationZ>-2481029.852</caom2:geoLocationZ>
+  </caom2:telescope>
+  <caom2:instrument>
+    <caom2:name>Band 3</caom2:name>
+  </caom2:instrument>
+  <caom2:environment>
+    <caom2:tau>1.240063538270838</caom2:tau>
+    <caom2:wavelengthTau>0.00035</caom2:wavelengthTau>
+  </caom2:environment>
+  <caom2:planes>
+    <caom2:plane caom2:id="e960e4a5-6d96-4588-84bc-d96fc84888c6">
+      <caom2:productID>A002_Xb945f7_X1551.CAL.J1924-2914</caom2:productID>
+      <caom2:metaRelease>2016-10-12T00:55:56.000</caom2:metaRelease>
+      <caom2:dataRelease>2016-10-12T00:55:56.000</caom2:dataRelease>
+      <caom2:dataProductType>visibility</caom2:dataProductType>
+      <caom2:calibrationLevel>2</caom2:calibrationLevel>
+      <caom2:provenance>
+        <caom2:name>CASA</caom2:name>
+        <caom2:version>CASA Version 4.7.2-REL (r39762)</caom2:version>
+        <caom2:reference>https://casa.nrao.edu/</caom2:reference>
+      </caom2:provenance>
+      <caom2:position>
+        <caom2:bounds xsi:type="caom2:Circle">
+          <caom2:center>
+            <caom2:cval1>291.2127331541666</caom2:cval1>
+            <caom2:cval2>-29.24170028611111</caom2:cval2>
+          </caom2:center>
+          <caom2:radius>25.52146522844438</caom2:radius>
+        </caom2:bounds>
+        <caom2:timeDependent>false</caom2:timeDependent>
+      </caom2:position>
+      <caom2:energy>
+        <caom2:bounds>
+          <caom2:lower>0.002585143069553096</caom2:lower>
+          <caom2:upper>0.0026723410725081236</caom2:upper>
+          <caom2:samples>
+            <caom2:sample>
+              <caom2:lower>0.002585143069553096</caom2:lower>
+              <caom2:upper>0.0026723410725081236</caom2:upper>
+            </caom2:sample>
+          </caom2:samples>
+        </caom2:bounds>
+        <caom2:dimension>1</caom2:dimension>
+        <caom2:sampleSize>7936.0</caom2:sampleSize>
+        <caom2:emBand>Millimeter</caom2:emBand>
+      </caom2:energy>
+      <caom2:time>
+        <caom2:bounds>
+          <caom2:lower>57673.0353575</caom2:lower>
+          <caom2:upper>57673.0671778</caom2:upper>
+          <caom2:samples>
+            <caom2:sample>
+              <caom2:lower>57673.0353575</caom2:lower>
+              <caom2:upper>57673.0671778</caom2:upper>
+            </caom2:sample>
+          </caom2:samples>
+        </caom2:bounds>
+        <caom2:dimension>1</caom2:dimension>
+        <caom2:resolution>71.0</caom2:resolution>
+        <caom2:sampleSize>261.315362926</caom2:sampleSize>
+        <caom2:exposure>261.315362926</caom2:exposure>
+      </caom2:time>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="40698336-a0f1-4cb0-b6f5-48551d341222">
+          <caom2:uri>ad:ALMACA/uid___A002_Xb945f7_X1551.CAL.J1924-2914.ms.split.cal.tar.gz</caom2:uri>
+          <caom2:productType>calibration</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/tar+gzip</caom2:contentType>
+          <caom2:parts/>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+  </caom2:planes>
+  <caom2:members>
+    <caom2:observationURI>caom:ALMA/A001_X88b_X23</caom2:observationURI>
+  </caom2:members>
+</caom2:Observation>

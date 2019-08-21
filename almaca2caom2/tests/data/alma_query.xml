@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Produced with astropy.io.votable version 3.2.1
+     http://www.astropy.org/ -->
+<VOTABLE version="1.3" xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ivoa.net/xml/VOTable/v1.3">
+ <RESOURCE type="results">
+  <TABLE>
+   <FIELD ID="Project_code" arraysize="64" datatype="char" name="Project code">
+    <DESCRIPTION>
+     OUS Project Code
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Source_name" arraysize="256" datatype="char" name="Source name" ucd="meta.id;pos" utype="Observation.Target.name">
+    <DESCRIPTION>
+     Name of the source as registered in the ASDM. Partial matches
+     through wildcards (?, *), and boolean OR expressions ("|"), can
+     be used.
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="RA" datatype="double" name="RA" ucd="pos.eq.ra;meta.main" unit="deg" utype="Characterisation.SpatialAxis.Coverage.Location.coord.Position2D.Value2.C1">
+    <DESCRIPTION>
+     Right Ascension of the field pointing.
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Dec" datatype="double" name="Dec" ucd="pos.eq.dec;meta.main" unit="deg" utype="Characterisation.SpatialAxis.Coverage.Location.coord.Position2D.Value2.C2">
+    <DESCRIPTION>
+     Declination of the field pointing.
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Galactic_longitude" datatype="double" name="Galactic longitude" ucd="pos.galactic.lon" unit="deg">
+    <DESCRIPTION>
+     Galactic longitude of the observation for RA/Dec. Estimated using
+     PyEphem and RA/Dec.
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Galactic_latitude" datatype="double" name="Galactic latitude" ucd="pos.galactic.lat" unit="deg">
+    <DESCRIPTION>
+     Galactic latitude of the observation for RA/Dec. Estimated using
+     PyEphem and RA/Dec.
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Band" arraysize="*" datatype="long" name="Band">
+    <DESCRIPTION>
+     Space delimited list of bands
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Spatial_resolution" datatype="double" name="Spatial resolution"/>
+   <FIELD ID="Frequency_resolution" datatype="double" name="Frequency resolution" ucd="spect.resolution" unit="kHz" utype="Char.SpectralAxis.Resolution.refval">
+    <DESCRIPTION>
+     Estimated frequency resolution from all the spectral windows,
+     using median values of channel widths.
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Array" arraysize="*" datatype="char" name="Array"/>
+   <FIELD ID="Mosaic" arraysize="1" datatype="char" name="Mosaic"/>
+   <FIELD ID="Integration" datatype="double" name="Integration" ucd="time.duration;obs.exposure" unit="s" utype="Char.TimeAxis.Coverage.Support.Extent">
+    <DESCRIPTION>
+     Aggregated integration time for the field in the ASDM.
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Release_date" arraysize="1" datatype="char" name="Release date"/>
+   <FIELD ID="Frequency_support" arraysize="2700" datatype="char" name="Frequency support" ucd="em.freq;obs;meta.main" unit="GHz" utype="Char.SpectralAxis.Coverage.Location.support">
+    <DESCRIPTION>
+     All frequency ranges used by the field
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Velocity_resolution" datatype="double" name="Velocity resolution" ucd="phys.veloc;spect.resolution" unit="m.s-1" utype="Char.VelocityAxis.Resolution.refval">
+    <DESCRIPTION>
+     Estimated velocity resolution from all the spectral windows, from
+     frequency resolution.
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Pol_products" arraysize="64" datatype="char" name="Pol products" ucd="phys.polarization;meta.code">
+    <DESCRIPTION>
+     Polarisation products provided.
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Observation_date" arraysize="*" datatype="char" name="Observation date"/>
+   <FIELD ID="PI_name" arraysize="256" datatype="char" name="PI name" ucd="meta.id.PI">
+    <DESCRIPTION>
+     case-insensitive partial match over the full PI name. Wildcards
+     can be used
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="SB_name" arraysize="128" datatype="char" name="SB name" ucd="meta.code;obs;instr.setup">
+    <DESCRIPTION>
+     Name of the Scheduling Block used as a template for executing the
+     ASDM containing this Field.
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Proposal_authors" arraysize="512" datatype="char" name="Proposal authors" ucd="meta.id.CoI">
+    <DESCRIPTION>
+     Full name of CoIs .
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Line_sensitivity__10_km_s_" datatype="double" name="Line sensitivity (10 km/s)"/>
+   <FIELD ID="Continuum_sensitivity" datatype="double" name="Continuum sensitivity" unit="mJy/beam">
+    <DESCRIPTION>
+     Estimated noise in the aggregated continuum bandwidth. Note this
+     is an indication only, it does not include the effects of
+     flagging or dynamic range limitations.
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="PWV" datatype="float" name="PWV" ucd="obs.atmos.extinction" unit="mm">
+    <DESCRIPTION>
+     Estimated precipitable water vapour from the XML_CALWVR_ENTITIES
+     table.
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Group_ous_id" arraysize="64" datatype="char" name="Group ous id">
+    <DESCRIPTION>
+     Group OUS ID
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Member_ous_id" arraysize="64" datatype="char" name="Member ous id">
+    <DESCRIPTION>
+     Member OUS ID
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Asdm_uid" arraysize="32" datatype="char" name="Asdm uid" ucd="meta.id">
+    <DESCRIPTION>
+     UID of the ASDM containing this Field.
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Project_title" arraysize="256" datatype="char" name="Project title" ucd="meta.title;obs.proposal">
+    <DESCRIPTION>
+     Case-insensitive search over the project title
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Project_type" arraysize="16" datatype="char" name="Project type" ucd="meta.code.class;obs.proposal">
+    <DESCRIPTION>
+     Project type.
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Scan_intent" arraysize="256" datatype="char" name="Scan intent" ucd="meta.code.class;obs">
+    <DESCRIPTION>
+     Scan intent list for the observed field.
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Field_of_view" datatype="double" name="Field of view" ucd="phys.angSize;instr.fov" unit="arcsec" utype="Characterisation.SpatialAxis.Coverage.Bounds">
+    <DESCRIPTION>
+     Field of view (arcsec). Estimated from the frequency and antennas
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="Largest_angular_scale" datatype="double" name="Largest angular scale" ucd="pos.angResolution;stat.max" unit="arcsec" utype="Characterisation.SpatialAxis.Coverage.Bounds.limits.Interval.HiLim">
+    <DESCRIPTION>
+     Due to the fact that radio antennas can not be placed infinitely
+     close, measurements do have a smallest separation which
+     translates into a maximal angular distance beyond which features
+     can not be resolved reliably any more. Adding observations with
+     the ALMA Total Power array can add those missing largest scales.
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="QA2_Status" arraysize="1" datatype="char" name="QA2 Status" ucd="meta.flag">
+    <DESCRIPTION>
+     Quality Assessment 2 status: does the Member / Group OUS fulfil
+     the PI's requirements?
+    </DESCRIPTION>
+   </FIELD>
+   <FIELD ID="COUNT" datatype="long" name="COUNT"/>
+   <FIELD ID="Science_keyword" arraysize="200" datatype="char" name="Science keyword"/>
+   <FIELD ID="Scientific_category" arraysize="200" datatype="char" name="Scientific category"/>
+   <FIELD ID="ASA_PROJECT_CODE" arraysize="64" datatype="char" name="ASA_PROJECT_CODE">
+    <DESCRIPTION>
+     OUS Project Code
+    </DESCRIPTION>
+   </FIELD>
+   <DATA>
+    <TABLEDATA>
+     <TR>
+      <TD>2016.1.00010.S</TD>
+      <TD>J1924+1540</TD>
+      <TD>291.1643991666876</TD>
+      <TD>15.678872500000974</TD>
+      <TD>50.62558730075227</TD>
+      <TD>-0.03093491668601245</TD>
+      <TD>6</TD>
+      <TD>0.14350929428093784</TD>
+      <TD>61.03605108948816</TD>
+      <TD>12m</TD>
+      <TD/>
+      <TD>1028.16</TD>
+      <TD>2</TD>
+      <TD>[219.49..219.61GHz,61.04kHz,776.2uJy/beam@10km/s,194uJy/beam@native, XX YY] U [220.33..220.45GHz,61.04kHz,775.5uJy/beam@10km/s,194.2uJy/beam@native, XX YY] U [230.47..230.58GHz,61.04kHz,778.3uJy/beam@10km/s,199.4uJy/beam@native, XX YY] U [230.79..232.78GHz,31250.46kHz,786.3uJy/beam@10km/s,48.9uJy/beam@native, XX YY]</TD>
+      <TD>79.35559057281354</TD>
+      <TD>XX YY</TD>
+      <TD>2016-09-30 23:42:49</TD>
+      <TD>Koda, Jin</TD>
+      <TD>J1924+15_a_06_TM1</TD>
+      <TD>Scoville, Nick; Hasegawa, Tetsuo; Onodera, Sachiko; Sakamoto, Seiichi; Sawada, Tsuyoshi;</TD>
+      <TD>0.7754845522779689</TD>
+      <TD>0.04487452583960049</TD>
+      <TD>0.8322094</TD>
+      <TD>uid://A001/X88b/X36</TD>
+      <TD>uid://A001/X88b/X37</TD>
+      <TD>uid://A002/Xb8e115/Xabb</TD>
+      <TD>Resolving GMCs using CO Absorption Toward Compact QSOs Directly Behind the MW Disk</TD>
+      <TD>S</TD>
+      <TD>PHASE TARGET WVR</TD>
+      <TD>25.75009194102609</TD>
+      <TD>2.3179549995281765</TD>
+      <TD>Y</TD>
+      <TD>0</TD>
+      <TD>Inter-Stellar Medium (ISM)/Molecular clouds</TD>
+      <TD>ISM and star formation</TD>
+      <TD>2016.1.00010.S</TD>
+     </TR>
+     <TR>
+      <TD>2016.1.00010.S</TD>
+      <TD>J1851+0035</TD>
+      <TD>282.94467958332825</TD>
+      <TD>0.5923230555555606</TD>
+      <TD>33.49795090077839</TD>
+      <TD>0.19426322444458005</TD>
+      <TD>6</TD>
+      <TD>0.1309229071298289</TD>
+      <TD>61.037220623523154</TD>
+      <TD>12m</TD>
+      <TD/>
+      <TD>937.44</TD>
+      <TD>2</TD>
+      <TD>[219.46..219.58GHz,61.04kHz,808.4uJy/beam@10km/s,202.1uJy/beam@native, XX YY] U [220.30..220.42GHz,61.04kHz,807.7uJy/beam@10km/s,202.3uJy/beam@native, XX YY] U [230.44..230.55GHz,61.04kHz,809.9uJy/beam@10km/s,207.4uJy/beam@native, XX YY] U [230.76..232.75GHz,31251.06kHz,817.9uJy/beam@10km/s,50.9uJy/beam@native, XX YY]</TD>
+      <TD>79.3671777982061</TD>
+      <TD>XX YY</TD>
+      <TD>2016-09-30 22:21:09</TD>
+      <TD>Koda, Jin</TD>
+      <TD>J1851+00_a_06_TM1</TD>
+      <TD>Scoville, Nick; Hasegawa, Tetsuo; Onodera, Sachiko; Sakamoto, Seiichi; Sawada, Tsuyoshi;</TD>
+      <TD>0.807723808232946</TD>
+      <TD>0.04668228070688832</TD>
+      <TD>0.91353333</TD>
+      <TD>uid://A001/X88b/X2a</TD>
+      <TD>uid://A001/X88b/X2b</TD>
+      <TD>uid://A002/Xb8e115/X20e</TD>
+      <TD>Resolving GMCs using CO Absorption Toward Compact QSOs Directly Behind the MW Disk</TD>
+      <TD>S</TD>
+      <TD>PHASE TARGET WVR</TD>
+      <TD>25.753309189282295</TD>
+      <TD>2.1287068586304296</TD>
+      <TD>Y</TD>
+      <TD>0</TD>
+      <TD>Inter-Stellar Medium (ISM)/Molecular clouds</TD>
+      <TD>ISM and star formation</TD>
+      <TD>2016.1.00010.S</TD>
+     </TR>
+     <TR>
+      <TD>2016.1.00010.S</TD>
+      <TD>J1851+0035</TD>
+      <TD>282.9446795833472</TD>
+      <TD>0.5923230555555412</TD>
+      <TD>33.49795090078703</TD>
+      <TD>0.19426322442772398</TD>
+      <TD>3</TD>
+      <TD>0.3117690950324115</TD>
+      <TD>30.518622295217796</TD>
+      <TD>12m</TD>
+      <TD/>
+      <TD>1360.8</TD>
+      <TD>2</TD>
+      <TD>[107.19..109.17GHz,31251.07kHz,761.2uJy/beam@10km/s,32.3uJy/beam@native, XX YY] U [108.99..110.97GHz,31251.07kHz,789.6uJy/beam@10km/s,33.8uJy/beam@native, XX YY] U [109.73..109.79GHz,30.52kHz,786.1uJy/beam@10km/s,196.5uJy/beam@native, XX YY] U [110.15..110.21GHz,30.52kHz,794.2uJy/beam@10km/s,198.9uJy/beam@native, XX YY]</TD>
+      <TD>83.01594154786875</TD>
+      <TD>XX YY</TD>
+      <TD>2016-10-11 22:15:13</TD>
+      <TD>Koda, Jin</TD>
+      <TD>J1851+00_b_03_TM1</TD>
+      <TD>Scoville, Nick; Hasegawa, Tetsuo; Onodera, Sachiko; Sakamoto, Seiichi; Sawada, Tsuyoshi;</TD>
+      <TD>0.7612229411203125</TD>
+      <TD>0.023050200930540707</TD>
+      <TD>1.2531474</TD>
+      <TD>uid://A001/X88b/X26</TD>
+      <TD>uid://A001/X88b/X27</TD>
+      <TD>uid://A002/Xb945f7/Xc07</TD>
+      <TD>Resolving GMCs using CO Absorption Toward Compact QSOs Directly Behind the MW Disk</TD>
+      <TD>S</TD>
+      <TD>PHASE TARGET WVR</TD>
+      <TD>53.381938985905876</TD>
+      <TD>2.898450418721726</TD>
+      <TD>Y</TD>
+      <TD>0</TD>
+      <TD>Inter-Stellar Medium (ISM)/Molecular clouds</TD>
+      <TD>ISM and star formation</TD>
+      <TD>2016.1.00010.S</TD>
+     </TR>
+     <TR>
+      <TD>2016.1.00010.S</TD>
+      <TD>J1924+1540</TD>
+      <TD>291.1643991666485</TD>
+      <TD>15.678872600000783</TD>
+      <TD>50.6255873887998</TD>
+      <TD>-0.030934869277126596</TD>
+      <TD>3</TD>
+      <TD>0.32189210406444113</TD>
+      <TD>30.518102544757</TD>
+      <TD>12m</TD>
+      <TD/>
+      <TD>1511.974</TD>
+      <TD>2</TD>
+      <TD>[107.20..109.19GHz,31250.54kHz,765.5uJy/beam@10km/s,32.5uJy/beam@native, XX YY] U [109.00..110.99GHz,31250.54kHz,799.3uJy/beam@10km/s,34.2uJy/beam@native, XX YY] U [109.75..109.81GHz,30.52kHz,795uJy/beam@10km/s,198.7uJy/beam@native, XX YY] U [110.17..110.22GHz,30.52kHz,804.9uJy/beam@10km/s,201.6uJy/beam@native, XX YY]</TD>
+      <TD>83.00399154751256</TD>
+      <TD>XX YY</TD>
+      <TD>2016-10-10 21:47:55</TD>
+      <TD>Koda, Jin</TD>
+      <TD>J1924+15_b_03_TM1</TD>
+      <TD>Scoville, Nick; Hasegawa, Tetsuo; Onodera, Sachiko; Sakamoto, Seiichi; Sawada, Tsuyoshi;</TD>
+      <TD>0.7655388988410335</TD>
+      <TD>0.023257377008413033</TD>
+      <TD>1.2090318</TD>
+      <TD>uid://A001/X88b/X32</TD>
+      <TD>uid://A001/X88b/X33</TD>
+      <TD>uid://A002/Xb93c37/X536</TD>
+      <TD>Resolving GMCs using CO Absorption Toward Compact QSOs Directly Behind the MW Disk</TD>
+      <TD>S</TD>
+      <TD>PHASE TARGET WVR</TD>
+      <TD>53.375909469915086</TD>
+      <TD>3.381091609687814</TD>
+      <TD>Y</TD>
+      <TD>0</TD>
+      <TD>Inter-Stellar Medium (ISM)/Molecular clouds</TD>
+      <TD>ISM and star formation</TD>
+      <TD>2016.1.00010.S</TD>
+     </TR>
+     <TR>
+      <TD>2016.1.00010.S</TD>
+      <TD>J1851+0035</TD>
+      <TD>282.9446795833344</TD>
+      <TD>0.5923230555561253</TD>
+      <TD>33.49795090078172</TD>
+      <TD>0.19426322443933502</TD>
+      <TD>3</TD>
+      <TD>0.4020495803412699</TD>
+      <TD>30.518524121336444</TD>
+      <TD>12m</TD>
+      <TD/>
+      <TD>3326.4</TD>
+      <TD>2</TD>
+      <TD>[112.19..114.17GHz,31251.03kHz,835.6uJy/beam@10km/s,36.3uJy/beam@native, XX YY] U [113.99..115.97GHz,31251.03kHz,1.1mJy/beam@10km/s,49.4uJy/beam@native, XX YY] U [115.19..115.31GHz,61.04kHz,1.2mJy/beam@10km/s,219.1uJy/beam@native, XX YY] U [115.22..115.28GHz,30.52kHz,1.2mJy/beam@10km/s,309.9uJy/beam@native, XX YY]</TD>
+      <TD>79.3653976783761</TD>
+      <TD>XX YY</TD>
+      <TD>2016-10-12 00:55:56</TD>
+      <TD>Koda, Jin</TD>
+      <TD>J1851+00_a_03_TM1</TD>
+      <TD>Scoville, Nick; Hasegawa, Tetsuo; Onodera, Sachiko; Sakamoto, Seiichi; Sawada, Tsuyoshi;</TD>
+      <TD>0.8355730436908965</TD>
+      <TD>0.02887752969061726</TD>
+      <TD>0.8236249</TD>
+      <TD>uid://A001/X88b/X22</TD>
+      <TD>uid://A001/X88b/X23</TD>
+      <TD>uid://A002/Xb945f7/X1551</TD>
+      <TD>Resolving GMCs using CO Absorption Toward Compact QSOs Directly Behind the MW Disk</TD>
+      <TD>S</TD>
+      <TD>PHASE TARGET WVR</TD>
+      <TD>51.04293045688876</TD>
+      <TD>4.785774270723087</TD>
+      <TD>Y</TD>
+      <TD>0</TD>
+      <TD>Inter-Stellar Medium (ISM)/Molecular clouds</TD>
+      <TD>ISM and star formation</TD>
+      <TD>2016.1.00010.S</TD>
+     </TR>
+     <TR>
+      <TD>2016.1.00010.S</TD>
+      <TD>J1924+1540</TD>
+      <TD>291.164399166722</TD>
+      <TD>15.6788725000102</TD>
+      <TD>50.62558730077615</TD>
+      <TD>-0.030934916710831522</TD>
+      <TD>3</TD>
+      <TD>0.4043104297024606</TD>
+      <TD>30.513449275808608</TD>
+      <TD>12m</TD>
+      <TD/>
+      <TD>4173.12</TD>
+      <TD>2</TD>
+      <TD>[112.20..114.19GHz,31245.94kHz,778.7uJy/beam@10km/s,33.8uJy/beam@native, XX YY] U [113.95..115.94GHz,31245.94kHz,1.1mJy/beam@10km/s,46.6uJy/beam@native, XX YY] U [115.21..115.32GHz,61.03kHz,1.2mJy/beam@10km/s,211.1uJy/beam@native, XX YY] U [115.24..115.29GHz,30.51kHz,1.2mJy/beam@10km/s,298.6uJy/beam@native, XX YY]</TD>
+      <TD>79.34218929483164</TD>
+      <TD>XX YY</TD>
+      <TD>2016-10-21 21:26:37</TD>
+      <TD>Koda, Jin</TD>
+      <TD>J1924+15_a_03_TM1</TD>
+      <TD>Scoville, Nick; Hasegawa, Tetsuo; Onodera, Sachiko; Sakamoto, Seiichi; Sawada, Tsuyoshi;</TD>
+      <TD>0.7786759106560156</TD>
+      <TD>0.027040521194401947</TD>
+      <TD>2.2782638</TD>
+      <TD>uid://A001/X88b/X2e</TD>
+      <TD>uid://A001/X88b/X2f</TD>
+      <TD>uid://A002/Xbff114/X1af3</TD>
+      <TD>Resolving GMCs using CO Absorption Toward Compact QSOs Directly Behind the MW Disk</TD>
+      <TD>S</TD>
+      <TD>PHASE TARGET WVR</TD>
+      <TD>51.04784595864421</TD>
+      <TD>13.234589872327577</TD>
+      <TD>Y</TD>
+      <TD>0</TD>
+      <TD>Inter-Stellar Medium (ISM)/Molecular clouds</TD>
+      <TD>ISM and star formation</TD>
+      <TD>2016.1.00010.S</TD>
+     </TR>
+    </TABLEDATA>
+   </DATA>
+  </TABLE>
+ </RESOURCE>
+</VOTABLE>
