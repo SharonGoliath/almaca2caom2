@@ -58,37 +58,48 @@ def test_gen():
     db_fqn = '{}/alma_query.xml'.format(TEST_DATA_DIR)
     db_content = Table.read(db_fqn, format='votable')
 
-    obs = None
-    for ii in ['md_cal.pk', 'md_sci.pk']:
-        fqn = '{}/{}'.format(TEST_DATA_DIR, ii)
-        temp = mc.read_from_file(fqn)
-        assert temp is not None, 'expected result'
-        result = {}
-        result['spectral_windows'] = []
-        for line in temp:
-            temp2 = line.split(',', 1)
-            if temp2[0].strip() == 'spectral_windows':
-                x = temp2[1].strip().split(',')
-                count = 0
-                while count < len(x):
-                    y = (mc.to_float(x[count].replace('(', '').replace('[', '').replace(']', '').replace(')', '')),
-                         mc.to_float(x[count+1].replace('(', '').replace('[', '').replace(']', '').replace(')', '')))
-                    count += 2
-                    result[temp2[0]].append(y)
-            elif type(temp2[1]) is str:
-                result[temp2[0]] = temp2[1].strip()
+    sci_obs = None
+    cal_obs = None
+    for ii in os.listdir(TEST_DATA_DIR):
+        if ii.endswith('.pk'):
+            if 'cal' in ii:
+                obs = cal_obs
             else:
-                result[temp2[0]] = temp2[1]
-        try:
-            obs = ma.build_observation(result, db_content, obs)
-        except Exception as e:
-            import traceback
-            logging.error(traceback.format_exc())
-            assert False
+                obs = sci_obs
+            fqn = '{}/{}'.format(TEST_DATA_DIR, ii)
+            logging.error(fqn)
+            temp = mc.read_from_file(fqn)
+            assert temp is not None, 'expected result'
+            result = {'spectral_windows': []}
+            for line in temp:
+                temp2 = line.split(',', 1)
+                if temp2[0].strip() == 'spectral_windows':
+                    x = temp2[1].strip().split(',')
+                    count = 0
+                    while count < len(x):
+                        y = (mc.to_float(x[count].replace('(', '').replace('[', '').replace(']', '').replace(')', '')),
+                             mc.to_float(x[count+1].replace('(', '').replace('[', '').replace(']', '').replace(')', '')))
+                        count += 2
+                        result[temp2[0]].append(y)
+                elif type(temp2[1]) is str:
+                    result[temp2[0]] = temp2[1].strip()
+                else:
+                    result[temp2[0]] = temp2[1]
+            try:
+                obs = ma.build_observation(result, db_content, obs, fqn)
+            except Exception as e:
+                import traceback
+                logging.error(traceback.format_exc())
+                assert False
+            if 'cal' in ii:
+                cal_obs = obs
+            else:
+                sci_obs = obs
 
-        obs_fqn = '{}/{}.xml'.format(TEST_DATA_DIR, ii)
+    for obs in [cal_obs, sci_obs]:
+        obs_fqn = '{}/actual_{}.xml'.format(TEST_DATA_DIR, obs.observation_id)
         mc.write_obs_to_file(obs, obs_fqn)
-        expected_fqn = '{}/expected_{}.xml'.format(TEST_DATA_DIR, ii)
+        expected_fqn = '{}/expected_{}.xml'.format(TEST_DATA_DIR, obs.observation_id)
         expected = mc.read_obs_from_file(expected_fqn)
         result = get_differences(expected, obs, 'Observation')
         if result:

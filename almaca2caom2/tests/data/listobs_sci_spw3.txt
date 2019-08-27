@@ -1,19 +1,29 @@
 ================================================================================
-           MeasurementSet Name:  /usr/src/app/almaca2caom2/almaca2caom2/tests/data/for_CADC/2016.1.00010.S/science_goal.uid___A001_X88b_X21/group.uid___A001_X88b_X22/member.uid___A001_X88b_X23/calibrated/uid___A002_Xb945f7_X1551.CAL.J1924-2914.ms.split.cal      MS Version 2
+           MeasurementSet Name:  /data/uid___A002_Xb945f7_X1551.SCI.J1851+0035.line_spw3.ms.split.cal      MS Version 2
 ================================================================================
    Observer: jkoda     Project: uid://A001/X3ab/X10  
 Observation: ALMA
-Data records: 208362       Total elapsed time = 338.256 seconds
-   Observed from   12-Oct-2016/00:55:27.5   to   12-Oct-2016/01:01:05.8 (UTC)
+Data records: 1055586       Total elapsed time = 1867.54 seconds
+   Observed from   12-Oct-2016/01:05:19.3   to   12-Oct-2016/01:36:26.9 (UTC)
 
    ObservationID = 0         ArrayID = 0
   Date        Timerange (UTC)          Scan  FldId FieldName             nRows     SpwIds   Average Interval(s)    ScanIntent
-  12-Oct-2016/00:55:27.5 - 00:55:43.6     2      0 J1924-2914               36162  [0,1]  [0.576, 0.576] [CALIBRATE_ATMOSPHERE#AMBIENT,CALIBRATE_ATMOSPHERE#HOT,CALIBRATE_ATMOSPHERE#OFF_SOURCE,CALIBRATE_WVR#AMBIENT,CALIBRATE_WVR#HOT,CALIBRATE_WVR#OFF_SOURCE]
-              00:56:03.4 - 01:01:05.8     3      0 J1924-2914              172200  [0,1,2,3]  [6.05, 6.05, 6.05, 6.05] [CALIBRATE_BANDPASS#ON_SOURCE,CALIBRATE_FLUX#ON_SOURCE,CALIBRATE_WVR#ON_SOURCE]
+  12-Oct-2016/01:05:19.3 - 01:05:35.5     5      1 J1851+0035               36162  [0,1]  [0.576, 0.576] [CALIBRATE_ATMOSPHERE#AMBIENT,CALIBRATE_ATMOSPHERE#HOT,CALIBRATE_ATMOSPHERE#OFF_SOURCE,CALIBRATE_WVR#AMBIENT,CALIBRATE_WVR#HOT,CALIBRATE_WVR#OFF_SOURCE]
+              01:05:45.7 - 01:06:15.9     6      1 J1851+0035               17220  [0,1,2,3]  [6.05, 6.05, 6.05, 6.05] [CALIBRATE_PHASE#ON_SOURCE,CALIBRATE_WVR#ON_SOURCE]
+              01:06:31.6 - 01:06:47.8     7      1 J1851+0035               36162  [0,1]  [0.576, 0.576] [CALIBRATE_ATMOSPHERE#AMBIENT,CALIBRATE_ATMOSPHERE#HOT,CALIBRATE_ATMOSPHERE#OFF_SOURCE,CALIBRATE_WVR#AMBIENT,CALIBRATE_WVR#HOT,CALIBRATE_WVR#OFF_SOURCE]
+              01:06:58.4 - 01:13:33.1     8      1 J1851+0035              223860  [0,1,2,3]  [6.05, 6.05, 6.05, 6.05] [OBSERVE_TARGET#ON_SOURCE]
+              01:13:47.1 - 01:14:17.3     9      1 J1851+0035               17220  [0,1,2,3]  [6.05, 6.05, 6.05, 6.05] [CALIBRATE_PHASE#ON_SOURCE,CALIBRATE_WVR#ON_SOURCE]
+              01:14:33.4 - 01:21:08.0    10      1 J1851+0035              223860  [0,1,2,3]  [6.05, 6.05, 6.05, 6.05] [OBSERVE_TARGET#ON_SOURCE]
+              01:21:22.8 - 01:21:53.0    11      1 J1851+0035               17220  [0,1,2,3]  [6.05, 6.05, 6.05, 6.05] [CALIBRATE_PHASE#ON_SOURCE,CALIBRATE_WVR#ON_SOURCE]
+              01:22:08.3 - 01:22:24.4    12      1 J1851+0035               36162  [0,1]  [0.576, 0.576] [CALIBRATE_ATMOSPHERE#AMBIENT,CALIBRATE_ATMOSPHERE#HOT,CALIBRATE_ATMOSPHERE#OFF_SOURCE,CALIBRATE_WVR#AMBIENT,CALIBRATE_WVR#HOT,CALIBRATE_WVR#OFF_SOURCE]
+              01:22:34.6 - 01:29:09.2    13      1 J1851+0035              223860  [0,1,2,3]  [6.05, 6.05, 6.05, 6.05] [OBSERVE_TARGET#ON_SOURCE]
+              01:29:23.3 - 01:29:53.5    14      1 J1851+0035               17220  [0,1,2,3]  [6.05, 6.05, 6.05, 6.05] [CALIBRATE_PHASE#ON_SOURCE,CALIBRATE_WVR#ON_SOURCE]
+              01:30:09.8 - 01:35:44.0    15      1 J1851+0035              189420  [0,1,2,3]  [6.05, 6.05, 6.05, 6.05] [OBSERVE_TARGET#ON_SOURCE]
+              01:35:56.6 - 01:36:26.9    16      1 J1851+0035               17220  [0,1,2,3]  [6.05, 6.05, 6.05, 6.05] [CALIBRATE_PHASE#ON_SOURCE,CALIBRATE_WVR#ON_SOURCE]
            (nRows = Total number of rows per scan) 
 Fields: 1
   ID   Code Name                RA               Decl           Epoch   SrcId      nRows
-  0    none J1924-2914          19:24:51.055957 -29:14:30.12103 ICRS    0         208362
+  1    none J1851+0035          18:51:46.723100 +00.35.32.36300 ICRS    0        1055586
 Spectral Windows:  (4 unique spectral windows and 1 unique polarization setups)
   SpwID  Name                                      #Chans   Frame   Ch0(MHz)  ChanWid(kHz)  TotBW(kHz) CtrFreq(MHz) BBC Num  Corrs  
   0      X680143931#ALMA_RB_03#BB_3#SW-01#FULL_RES    128   TOPO  113983.078     15625.000   2000000.0 114975.2657        3  XX  YY
@@ -22,10 +32,10 @@ Spectral Windows:  (4 unique spectral windows and 1 unique polarization setups)
   3      X680143931#ALMA_RB_03#BB_2#SW-01#FULL_RES   3840   TOPO  115187.841        30.518    117187.5 115246.4198        2  XX  YY
 Sources: 4
   ID   Name                SpwId RestFreq(MHz)  SysVel(km/s) 
-  0    J1924-2914          0     115000         0            
-  0    J1924-2914          1     113200         0            
-  0    J1924-2914          2     115271.202     0            
-  0    J1924-2914          3     115271.202     0            
+  0    J1851+0035          2     115271.202     0            
+  0    J1851+0035          3     115271.202     0            
+  0    J1851+0035          0     115000         0            
+  0    J1851+0035          1     113200         0            
 Antennas: 41:
   ID   Name  Station   Diam.    Long.         Lat.                Offset from array center (m)                ITRF Geocentric coordinates (m)        
                                                                      East         North     Elevation               x               y               z

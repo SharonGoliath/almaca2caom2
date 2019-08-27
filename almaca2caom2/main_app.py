@@ -79,7 +79,7 @@ from caom2 import Telescope, Instrument, Target, Proposal
 from caom2 import CompositeObservation, Provenance, Artifact, Plane
 from caom2 import DataProductType, CalibrationLevel, TargetType
 from caom2 import ReleaseType, ProductType, ObservationIntentType
-from caom2 import Time, ObservationURI, Environment
+from caom2 import Time, ObservationURI, Environment, PlaneURI
 
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
@@ -99,19 +99,23 @@ class AlmacaName(ec.StorageName):
         super(AlmacaName, self).__init__(collection=ARCHIVE,
                                          collection_pattern='*',
                                          fname_on_disk=fname_on_disk)
-        temp = fname_on_disk.split('/')
-        for ii in temp:
-            if ii.startswith('member'):
-                self._obs_id = ii.split('___')[1]
-                self._product_id = temp[-1].replace('.ms.split.cal', '').replace('uid___', '')
+        temp = fname_on_disk.split('/')[-1].split('.')
+        self._obs_id = '{}.{}.{}'.format(
+            temp[0], temp[1], temp[2]).replace('uid___', '')
+        self._product_id = temp[3]
+
+    @property
+    def product_id(self):
+        return self._product_id
+
+    @property
+    def input_uri(self):
+        return PlaneURI(ec.CaomName.make_plane_uri(
+            ARCHIVE, self._obs_id, self._product_id))
 
 
-def build_position(fqn, db_content, field_index):
-    if '.SCI' in fqn:
-        f_name = './data/listobs_sci.txt'
-    else:
-        f_name = './data/listobs_cal.txt'
-
+def build_position(fqn, db_content, field_index, md_name):
+    f_name = md_name.replace('md_', 'listobs_').replace('.pk', '.txt')
     with open(f_name) as f:
         temp = f.readlines()
     index = -1
@@ -124,7 +128,7 @@ def build_position(fqn, db_content, field_index):
         raise mc.CadcException('ra dec not found')
 
     ra = temp[index].split()[3]
-    dec = temp[index].split()[4]
+    dec = temp[index].split()[4].replace('.', ':', 2)
     # logging.error('ra {} dec {}'.format(ra, dec))
 
     from astropy import units
@@ -132,29 +136,6 @@ def build_position(fqn, db_content, field_index):
 
     result = SkyCoord(ra, dec, frame='icrs',
                       unit=(units.hourangle, units.deg))
-    # points = []
-    # vertices = []
-    # segment_type = SegmentType['MOVE']
-    # x1 = y1 = None
-    # for theta in range(360, 0, -5):
-    #     x = radius.to('degree').value * math.cos(math.radians(theta)) + ra
-    #     y = radius.to('degree').value * math.sin(math.radians(theta)) + dec
-    #     points.append(Point(x, y))
-    #     vertices.append(Vertex(x, y, segment_type))
-    #     segment_type = SegmentType['LINE']
-    #     if x1 is None:
-    #         x1 = x
-    #         y1 = y
-    #
-    # # Close up the sample area
-    # vertices.append(Vertex(x1,
-    #                        y1,
-    #                        SegmentType['CLOSE']))
-    #
-    # return Position(
-    #     bounds=Polygon(points=points, samples=shape.MultiPolygon(vertices)),
-    #     sample_size=None,
-    #     time_dependent=False)
 
     # HK 19-08-19
     # Looking at the ALMA web archive listing, it claims a 'FOV' (field of
@@ -202,42 +183,23 @@ def build_energy(spectral_windows, sample_size):
     energy.dimension = 1
     c = constants.c.to('m/s').value
 
-    samples = []
     wvlns = []
     mid_wvln = []
-    min_wvln = 1e10
-    max_wvln = 0
     min_wvlns_sgo = []
-    # for spw in spectral_windows:
-    #     wvln = numpy.array((c / spw[0], c / spw[1]))
-    #     wvlns.append(wvln)
-    #     mid_wvln.append(wvln[0] + wvln[1])
-    # order = numpy.argsort(mid_wvln)
 
     for spw in spectral_windows:
         wvln = numpy.array((c / spw[0], c / spw[1]))
         wvlns.append(wvln)
         min_wvlns_sgo.append(wvln[1])
         mid_wvln.append(wvln[0] + wvln[1])
-    order = numpy.argsort(mid_wvln)
     order_sgo = numpy.argsort(min_wvlns_sgo)
-    logging.error(wvlns)
 
-    # import logging
-    # logging.error(wvlns)
-    # logging.error(order)
-    # logging.error(order_sgo)
-    # for idx in order:
     min_bound = None
     max_bound = None
     si = []
     for idx in order_sgo:
-        # logging.error(idx)
-        # logging.error('{} {}'.format(min(wvlns[idx]), max(wvlns[idx])))
         lower = min(wvlns[idx])
         upper = max(wvlns[idx])
-        # min_wvln = min(min_wvln, min(wvlns[idx]))
-        # max_wvln = max(max_wvln, max(wvlns[idx]))
 
         si = _add_subinterval(si, (lower, upper))
         if min_bound is not None:
@@ -248,18 +210,6 @@ def build_energy(spectral_windows, sample_size):
             max_bound = max(max_bound, upper)
         else:
             max_bound = upper
-
-    # import logging
-    # logging.error(samples)
-    # temp = _adjust_intervals(samples)
-    # temp_len = len(temp)
-    # samples_len = len(samples)
-    # while temp_len < samples_len:
-    #     samples_len = len(temp)
-    #     temp = _adjust_intervals(temp)
-    #     temp_len = len(temp)
-        # import logging
-        # logging.error('through while loop {} {}'.format(temp_len, samples_len))
 
     samples = []
     for s in si:
@@ -277,15 +227,17 @@ def _add_subinterval(si_list, subinterval):
     if not si_list:
         return [subinterval]
     # check for overlaps
-    # begining of the list?
+    # beginning of the list?
     if subinterval[1] < si_list[0][0]:
         return [subinterval] + si_list
     if subinterval[0] > si_list[-1][1]:
         return si_list + [subinterval]
     result = []
     for si in si_list:
-        if (si[0] >= subinterval[0] and si[0] <= subinterval[1]) or \
-                (subinterval[0] >= si[0] and subinterval[0] <= si[1]):
+        if (subinterval[0] <= si[0] <= subinterval[1]) or \
+                (si[0] <= subinterval[0] <= si[1]):
+        # if (si[0] >= subinterval[0] and si[0] <= subinterval[1]) or \
+        #         (subinterval[0] >= si[0] and subinterval[0] <= si[1]):
             # overlap detected
             subinterval = (min(si[0], subinterval[0]),
                            max(si[1], subinterval[1]))
@@ -348,11 +300,11 @@ def build_time(override):
     return Time(bounds=time_bounds,
                 dimension=1,
                 resolution=resolution,
-                sample_size=exposure_time,
+                sample_size=mc.to_float(override.get('sample_size')),
                 exposure=exposure_time)
 
 
-def _build_obs(override, db_content, fqn, index):
+def _build_obs(override, db_content, fqn, index, almaca_name):
 
     obs_date = db_content['Observation_date'][index]
     if obs_date is None:
@@ -427,22 +379,14 @@ def _build_obs(override, db_content, fqn, index):
     else:
         intent = ObservationIntentType.CALIBRATION
 
-    obs_id = _build_product_id(fqn)
-    # temp = fqn.split('/')
-    # for ii in temp:
-    #     if ii.startswith('member'):
-    #         obs_id = ii.split('___')[1]
-    if obs_id is None:
-        raise mc.CadcException('No obs id, cannot continue.')
-
-    algorithm = Algorithm(name='target splitting')
+    algorithm = Algorithm(name='band splitting')
     #
     # PD, SG 15-08-19
     # make it a composite, algorithm name something like
     # 'target splitting'
     #
     observation = CompositeObservation(collection=ARCHIVE,
-                                       observation_id=obs_id,
+                                       observation_id=almaca_name.obs_id,
                                        sequence_number=None,
                                        intent=intent,
                                        type="OBJECT",
@@ -457,18 +401,6 @@ def _build_obs(override, db_content, fqn, index):
         ObservationURI(
             ec.CaomName.make_obs_uri_from_obs_id('ALMA', 'A001_X88b_X23')))
     return observation
-
-
-def _build_product_id(fqn):
-    product_id = None
-    temp = fqn.split('/')
-    for ii in temp:
-        if ii.startswith('member'):
-            product_id = temp[-1].replace('.ms.split.cal', '').replace('uid___',
-                                                                       '')
-    if product_id is None:
-        raise mc.CadcException('No obs id, cannot continue.')
-    return product_id
 
 
 def _get_version(fqn):
@@ -512,11 +444,14 @@ def _get_index(fqn, db_content):
     return index
 
 
-def build_observation(override, db_content, observation):
+def build_observation(override, db_content, observation, md_name):
 
     fqn = override.get('fqn')
+    almaca_name = AlmacaName(fname_on_disk=fqn)
     field_index = _get_index(fqn, db_content)
-    observation = _build_obs(override, db_content, fqn, field_index)
+    if observation is None:
+        observation = _build_obs(override, db_content, fqn, field_index,
+                                 almaca_name)
 
     version = _get_version(fqn)
     # TODO time.Time(override.get('casa_run_date')).datetime
@@ -527,6 +462,8 @@ def build_observation(override, db_content, observation):
 
     if fqn is None or '.SCI.' in fqn:
         product_type = ProductType.SCIENCE
+        ip = AlmacaName(override.get('provenance'))
+        provenance.inputs.add(ip.input_uri)
     else:
         product_type = ProductType.CALIBRATION
 
@@ -540,14 +477,13 @@ def build_observation(override, db_content, observation):
     else:
         release_date = time.Time(release_date).to_datetime()
 
-    product_id = _build_product_id(fqn)
-    logging.error('Add plane {}'.format(product_id))
-    plane = Plane(product_id=product_id,
+    logging.error('Add plane {}'.format(almaca_name.product_id))
+    plane = Plane(product_id=almaca_name.product_id,
                   data_release=release_date,
                   meta_release=observation.meta_release,
                   provenance=provenance)
 
-    plane.position = build_position(fqn, db_content, field_index)
+    plane.position = build_position(fqn, db_content, field_index, md_name)
     plane.energy = build_energy(override.get('spectral_windows'),
                                 override.get('sample_size'))
     plane.polarization = None
