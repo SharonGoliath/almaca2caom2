@@ -72,6 +72,8 @@ import math
 import numpy
 import os
 
+from datetime import datetime
+
 from astropy import units, time, constants
 from caom2 import SegmentType, Vertex, Point, Position, Polygon, shape
 from caom2 import Energy, EnergyBand, shape, Interval, Algorithm
@@ -145,8 +147,6 @@ def build_position(fqn, db_content, field_index, md_name):
 
     # , radius=24 * units.arcsec
     fov = db_content['Field_of_view'][field_index]
-    # logging.error('fov is {}'.format(db_content['Field_of_view']))
-    # logging.error('fov2 is {}'.format(db_content['Field_of_view'][]))
     radius = (fov / 2.0) * units.arcsec
     bounds = shape.Circle(
         center=shape.Point(result.ra.degree, result.dec.degree),
@@ -172,11 +172,6 @@ def build_energy(spectral_windows, sample_size):
     # Specifically, the wavelengths covered by the first of the 4 ranges
     # I list, already span a much larger range than the first range listed
     # in caom2.
-
-    # [array([0.00263015, 0.00258514]),
-    # array([0.00267234, 0.00262589]),
-    # array([0.00260198, 0.00260066]),
-    # array([0.00260264, 0.0026    ])]
 
     energy = Energy()
     energy.em_band = EnergyBand.MILLIMETER
@@ -236,8 +231,6 @@ def _add_subinterval(si_list, subinterval):
     for si in si_list:
         if (subinterval[0] <= si[0] <= subinterval[1]) or \
                 (si[0] <= subinterval[0] <= si[1]):
-        # if (si[0] >= subinterval[0] and si[0] <= subinterval[1]) or \
-        #         (subinterval[0] >= si[0] and subinterval[0] <= si[1]):
             # overlap detected
             subinterval = (min(si[0], subinterval[0]),
                            max(si[1], subinterval[1]))
@@ -249,31 +242,6 @@ def _add_subinterval(si_list, subinterval):
             else:
                 result += [si]
     return result + [subinterval]
-
-
-def _adjust_intervals(samples):
-    temp = []
-    count = 0
-    length = len(samples)
-    while count < (length - 1):
-        # logging.error('{} {}'.format(min(wvlns[idx]), max(wvlns[idx])))
-        # logging.error('count {}'.format(count))
-        # logging.error('count {} {} {}'.format(
-        # count, samples[count].upper, samples[count + 1].lower))
-        if samples[count].upper > samples[count + 1].lower:
-            interval = shape.SubInterval(samples[count].lower,
-                                         samples[count + 1].upper)
-            temp.append(interval)
-            count += 2
-            # logging.error('make a new one {}'.format(count))
-        else:
-            temp.append(samples[count])
-            count += 1
-            # logging.error('keep an old one {}'.format(count))
-
-    if count == (length - 1):
-        temp.append(samples[count])
-    return temp
 
 
 def build_time(override):
@@ -349,10 +317,6 @@ def _build_obs(override, db_content, fqn, index, almaca_name):
     # 'Field_of_view', 'Largest_angular_scale', 'QA2_Status', 'COUNT',
     # 'Science_keyword', 'Scientific_category', 'ASA_PROJECT_CODE']
 
-    # logging.error('field {}'.format(override.get('field')))
-    # logging.error('source name {}'.format(db_content['Source_name']))
-    # logging.error('band {}'.format(db_content['Band']))
-
     # HK - 14-08-19
     # can we include the project code, and not just the observation UID
     # somewhere in here?  For the raw data, it looks like the project
@@ -411,19 +375,24 @@ def _get_version(fqn):
     # This would be possible to capture from the 'casa[date].log' file
     # generated automatically during processing - the second line
     # includes 'CASA version XXX'.
-    result = ''
+    version_result = ''
     log_dir = '{}/script'.format(fqn.split('calibrated')[0])
     log_dir_contents = os.listdir(log_dir)
     for ii in log_dir_contents:
         if ii.startswith('casa-') and ii.endswith('.log'):
             log_fqn = '{}/{}'.format(log_dir, ii)
-            # with open('./data/casa.log', 'r') as f:
             with open(log_fqn, 'r') as f:
                 temp = f.readlines()
             for jj in temp:
                 if 'CASA Version' in jj:
-                    result = jj.split('casa')[1].replace(':', '').strip()
-    return result
+                    version_result = jj.split(
+                        'casa')[1].replace(':', '').strip()
+
+            # get the timestamp from the filename, use it as the
+            # 'last_executed'
+            temp = ii.replace('casa-', '').replace('.log', '')
+            last_result = datetime.fromtimestamp(mc.make_seconds(temp))
+    return version_result, last_result
 
 
 def _get_index(fqn, db_content):
@@ -431,7 +400,6 @@ def _get_index(fqn, db_content):
     found = False
     asdm_uid = fqn.split('/')[-1].split('.')[0].replace('___', '://').replace('_', '/')
     for ii in db_content['Asdm_uid']:
-        logging.error('{} {} '.format(ii, asdm_uid))
         if ii == asdm_uid:
             found = True
             break
@@ -453,11 +421,11 @@ def build_observation(override, db_content, observation, md_name):
         observation = _build_obs(override, db_content, fqn, field_index,
                                  almaca_name)
 
-    version = _get_version(fqn)
+    version, last_executed = _get_version(fqn)
     # TODO time.Time(override.get('casa_run_date')).datetime
     provenance = Provenance(name="CASA",
                             version="{}".format(version),
-                            last_executed=None,
+                            last_executed=last_executed,
                             reference="https://casa.nrao.edu/")
 
     if fqn is None or '.SCI.' in fqn:

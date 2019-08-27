@@ -50,6 +50,7 @@
         <caom2:name>CASA</caom2:name>
         <caom2:version>CASA Version 4.7.2-REL (r39762)</caom2:version>
         <caom2:reference>https://casa.nrao.edu/</caom2:reference>
+        <caom2:lastExecuted>2019-07-19T16:27:46.000</caom2:lastExecuted>
       </caom2:provenance>
       <caom2:position>
         <caom2:bounds xsi:type="caom2:Circle">
@@ -112,6 +113,7 @@
         <caom2:name>CASA</caom2:name>
         <caom2:version>CASA Version 4.7.2-REL (r39762)</caom2:version>
         <caom2:reference>https://casa.nrao.edu/</caom2:reference>
+        <caom2:lastExecuted>2019-07-19T16:27:46.000</caom2:lastExecuted>
       </caom2:provenance>
       <caom2:position>
         <caom2:bounds xsi:type="caom2:Circle">
