@@ -1,22 +1,35 @@
 import os
 import math
 
-TEST_DATA_DIR = '/usr/src/app/almaca2caom2/almaca2caom2/tests/data'
+ALMA_QUERY_DIR = '/usr/src/app/almaca2caom2/almaca2caom2/tests/data'
+TEST_DATA_DIR = '/data'
 
 
 def run_gen():
     import logging
     for root, dirs, files in os.walk(TEST_DATA_DIR):
+        # logging.error('root is {}'.format(root))
         for dir_name in dirs:
-            if 'ms.split.cal' in dir_name:
+            # logging.error('dir_name is {}'.format(dir_name))
+            if dir_name.endswith('ms.split.cal'):
                 fqn = '{}/{}'.format(root, dir_name)
+                pk_file = '{}/md.pk'.format(fqn)
+                if os.path.exists(pk_file):
+                    os.unlink(pk_file)
+                logging.error('fqn is {}'.format(fqn))
+                provenance = None
+                if '.SCI.' in fqn:
+                    temp = fqn.replace('.SCI.', '.CAL.')
+                    if os.path.exists(temp):
+                        provenance = temp
                 try:
                     logging.error('Processing {}'.format(fqn))
-                    result = get_info(fqn)
-                    # result = try_vishead(fqn)
+                    result = get_info(fqn, provenance)
                     logging.error(result)
+                    try_vishead(fqn)
                     assert result is not None, 'expected result'
-                    pk_file = '{}/md.pk'.format(TEST_DATA_DIR)
+                    # pk_file = '{}/md.pk'.format(TEST_DATA_DIR)
+                    logging.error('writing {}'.format(pk_file))
                     with open(pk_file, 'w') as pkl:
                         # pickle.dump(result, pkl)
                         # pkl.writelines(result)
@@ -29,24 +42,54 @@ def run_gen():
                     logging.error(traceback.format_exc(e))
 
 
+def run_gen_specific():
+    fqn = '/data/for_CADC/2016.1.00010.S/science_goal.uid___A001_X88b_X21/' \
+          'group.uid___A001_X88b_X22/member.uid___A001_X88b_X23/calibrated/' \
+          'uid___A002_Xb945f7_X1551.SCI.J1851+0035.line_spw3.ms.split.cal'
+    import logging
+    pk_file = '{}/md.pk'.format(fqn)
+    if os.path.exists(pk_file):
+        os.unlink(pk_file)
+    logging.error('fqn is {}'.format(fqn))
+    provenance = None
+    if '.SCI.' in fqn:
+        temp = fqn.replace('.SCI.', '.CAL.')
+        if os.path.exists(temp):
+            provenance = temp
+    try:
+        logging.error('Processing {}'.format(fqn))
+        result = get_info(fqn, provenance)
+        logging.error(result)
+        try_vishead(fqn)
+        assert result is not None, 'expected result'
+        # pk_file = '{}/md.pk'.format(TEST_DATA_DIR)
+        logging.error('writing {}'.format(pk_file))
+        with open(pk_file, 'w') as pkl:
+            # pickle.dump(result, pkl)
+            # pkl.writelines(result)
+            for key in result.keys():
+                pkl.write('{}, {}\n'.format(key, result[key]))
+            pkl.write('{}, {}'.format('fqn', fqn))
+    except Exception as e:
+        logging.error('failed {}'.format(fqn))
+        import traceback
+        logging.error(traceback.format_exc(e))
+
+
 def try_vishead(fqn):
-    # import logging
-    # taskname='vishead'
-    # default()
-    # vis=fqn
-    # mode='get'
-    # hdkey='field'
-    # hdindex='2'
-    # hdvalue=vishead()
-    # logging.error(hdvalue[0])
-    listobs(vis=fqn, listfile='./abc.txt')
+    from datetime import datetime
+    list_fqn = '{}/listobs.txt'.format(fqn)
+    if os.path.exists(list_fqn):
+        os.unlink(list_fqn)
+    listobs(vis=fqn, listfile=list_fqn)
 
 
 def test_gen():
     # from astroquery.alma import Alma
     # from astropy.table import Table
     # db_table = Alma().query(payload={'project_code': '2016.1.00010.S'})
-    # db_table.write('{}/alma_query.xml'.format(TEST_DATA_DIR), format='votable')
+    # db_table.write('{}/alma_query.xml'.format(TEST_DATA_DIR),
+    # format='votable')
     # assert False
 
     import logging
@@ -55,69 +98,78 @@ def test_gen():
     from almaca2caom2 import main_app as ma
 
     from astropy.table import Table
-    db_fqn = '{}/alma_query.xml'.format(TEST_DATA_DIR)
+    db_fqn = '{}/alma_query.xml'.format(ALMA_QUERY_DIR)
     db_content = Table.read(db_fqn, format='votable')
 
-    sci_obs = None
-    cal_obs = None
-    for ii in os.listdir(TEST_DATA_DIR):
-        if ii.endswith('.pk'):
-            if 'cal' in ii:
-                obs = cal_obs
-            else:
-                obs = sci_obs
-            fqn = '{}/{}'.format(TEST_DATA_DIR, ii)
-            logging.error(fqn)
-            temp = mc.read_from_file(fqn)
-            assert temp is not None, 'expected result'
-            result = {'spectral_windows': []}
-            for line in temp:
-                temp2 = line.split(',', 1)
-                if temp2[0].strip() == 'spectral_windows':
-                    x = temp2[1].strip().split(',')
-                    count = 0
-                    while count < len(x):
-                        y = (mc.to_float(x[count].replace('(', '').replace('[', '').replace(']', '').replace(')', '')),
-                             mc.to_float(x[count+1].replace('(', '').replace('[', '').replace(']', '').replace(')', '')))
-                        count += 2
-                        result[temp2[0]].append(y)
-                elif type(temp2[1]) is str:
-                    result[temp2[0]] = temp2[1].strip()
-                else:
-                    result[temp2[0]] = temp2[1]
-            try:
-                obs = ma.build_observation(result, db_content, obs, fqn)
-            except Exception as e:
-                import traceback
-                logging.error(traceback.format_exc())
-                assert False
-            if 'cal' in ii:
-                cal_obs = obs
-            else:
-                sci_obs = obs
+    obs_lookup = {}
+    obs = None
+    for root, dirs, files in os.walk(TEST_DATA_DIR):
+        for dir_name in dirs:
+            if dir_name.endswith('ms.split.cal'):
+                fqn = '{}/{}/md.pk'.format(root, dir_name)
+                if not os.path.exists(fqn):
+                    continue
+                almaca_name = ma.AlmacaName(dir_name)
+                if obs is not None and almaca_name.obs_id != obs.observation_id:
+                    # logging.error('storing {}'.format(obs.observation_id))
+                    obs_lookup[obs.observation_id] = obs
+                    obs = obs_lookup.get(almaca_name.obs_id)
 
-    for obs in [cal_obs, sci_obs]:
-        obs_fqn = '{}/actual_{}.xml'.format(TEST_DATA_DIR, obs.observation_id)
-        mc.write_obs_to_file(obs, obs_fqn)
-        expected_fqn = '{}/expected_{}.xml'.format(TEST_DATA_DIR, obs.observation_id)
-        expected = mc.read_obs_from_file(expected_fqn)
-        result = get_differences(expected, obs, 'Observation')
-        if result:
-            logging.error('From {}'.format(expected_fqn))
-            msg = 'Differences found\n{}'.format('\n'.join([r for r in result]))
-            raise AssertionError(msg)
+                # logging.error('reading from {}'.format(fqn))
+                temp = mc.read_from_file(fqn)
+                assert temp is not None, 'expected result'
+                result = {'spectral_windows': []}
+                for line in temp:
+                    temp2 = line.split(',', 1)
+                    if temp2[0].strip() == 'spectral_windows':
+                        x = temp2[1].strip().split(',')
+                        count = 0
+                        while count < len(x):
+                            y = (mc.to_float(x[count].replace('(', '').replace('[', '').replace(']', '').replace(')', '')),
+                                 mc.to_float(x[count+1].replace('(', '').replace('[', '').replace(']', '').replace(')', '')))
+                            count += 2
+                            result[temp2[0]].append(y)
+                    elif type(temp2[1]) is str:
+                        result[temp2[0]] = temp2[1].strip()
+                    else:
+                        result[temp2[0]] = temp2[1]
+                try:
+                    obs = ma.build_observation(result, db_content, obs, fqn)
+                except Exception as e:
+                    import traceback
+                    logging.error(traceback.format_exc())
+                    # assert False
+
+    errors_found = False
+    for obs in obs_lookup:
+        obs_fqn = '{}/actual_{}.xml'.format(ALMA_QUERY_DIR,
+                                            obs)
+        actual = obs_lookup.get(obs)
+        mc.write_obs_to_file(actual, obs_fqn)
+        expected_fqn = '{}/expected_{}.xml'.format(ALMA_QUERY_DIR,
+                                                   actual.observation_id)
+        if os.path.exists(expected_fqn):
+            expected = mc.read_obs_from_file(expected_fqn)
+            result = get_differences(expected, actual, 'Observation')
+            if result:
+                msg = 'Differences found {}\n{}'.format(
+                    actual.observation_id, '\n'.join([r for r in result]))
+                logging.error(msg)
+                errors_found = True
+        else:
+            raise AssertionError(
+                'Unexpected Observation {}'.format(actual.observation_id))
+
+    if errors_found:
+        raise AssertionError('Final failure.')
     # assert False
 
 
-def get_info(filename):
+def get_info(filename, provenance):
     import logging
     info = {}
     msmd.open(filename)
-    logging.error(msmd.namesforspws())
     info['band'] = int(msmd.namesforspws(0)[0].split("#")[1].split("_")[2])
-    position = msmd.phasecenter()
-    info['ra'] = math.degrees(position['m0']['value'])
-    info['dec'] = math.degrees(position['m1']['value'])
     temp = msmd.fieldnames()
     if len(temp) > 1:
         # HK 13-08-2019
@@ -132,12 +184,14 @@ def get_info(filename):
         logging.warning('Repeated field names for MS {}'.format(filename))
         if len(fields) > 1:
             raise ValueError("Expected ms with just one target")
+        field = fields[0]
     else:
-        fields = temp
+        field = temp[0]
     if msmd.nobservations() > 1:
         raise ValueError("Exepected ms with just one observation")
-    info['field'] = fields[0]
-    spws = msmd.spwsforfield(fields[0])
+    info['field'] = field
+    logging.error('field is {}'.format(field))
+    spws = msmd.spwsforfield(field)
     spectral_windows = []
     for idx in spws:
         spectral_windows.append((min(msmd.chanfreqs(idx)), max(msmd.chanfreqs(idx))))
@@ -146,14 +200,11 @@ def get_info(filename):
     info['start_date'] = dates['begin']['m0']['value']
     info['end_date'] = dates['end']['m0']['value']
     info['project'] = msmd.projects()[0]
-    scans = msmd.scansforfield(info['field'])
+    scans = msmd.scansforfield(field)
     itime = 0
-    itime_len = 0
     for scan in scans:
         itime += len(msmd.timesforscan(scan)) * msmd.exposuretime(scan)['value']
-        itime_len += len(msmd.timesforscan(scan))
     info['itime'] = itime
-    info['resolution'] = itime_len
     info['effexposuretime'] = msmd.effexposuretime()['value']
 
     # HK 19-08-19
@@ -169,19 +220,67 @@ def get_info(filename):
     # complication that this will be variable for the different spectral
     # windows, and hence one merged range of frequencies might have multiple
     # frequency resolutions.  The msmd.chanwidths function (run per spectral
-    # window) will give this information in frequency space - this is still
-    # TODO until there's a resolution on the whether or not to split on
-    # Energy Band, because that will provide an answer as to 'which value to
-    # use'
-    sample_size = 0
-    energy_resolution = 0
-    for ii in spws:
-        logging.error('idx is {} value is {}'.format(ii, temp[0]))
-        kwargs = {'spw': ii}
-        temp = msmd.chanwidths(**kwargs)
-        sample_size += len(temp)
+    # window) will give this information in frequency space
+
+    # PD - 05-09-19
+    # resolution may be the same as sampleSize or it could be larger (photons
+    # scattered into neighbouring elements); for most of our data time
+    # resolution = sampleSize... might not be true for real time series
+    # data... note that energy axis is the resolvingPower (unitless)
+    #
+    # sampleSize is the size of one element (aka pixel):
+    #   - wavelength in m for energy
+    #
+    # HK 05-09-19
+    # For the energy dimension, it sounds like we want the following mappings:
+    #
+    # - sampleSize --> msmd.chanwidths
+    #
+    # - resolution --> msmd.chanres
+    #
+    # (sometimes observations are set up with the expectation of
+    # binning/smoothing, which would be captured in chanres but not
+    # chanwidths.  For the observation I've been looking at, the two values
+    # differ by a factor of 2, i.e., binning every 2 channels is expected)
+
+    # assuming 0th index, assuming the widths are the same for all
+    chan_widths = msmd.chanwidths(0)
+    temp = list(set(chan_widths))
+    if len(temp) > 1:
+        logging.warning('Found multiple values for chan_widths')
+    else:
+        info['energy_sample_size'] = chan_widths[0]
+
+    # assuming 0th index, assuming the res is the same for all
+    chan_res = msmd.chanres(0)
+    temp = list(set(chan_res))
+    if len(temp) > 1:
+        logging.warning('Found multiple values for chan_res')
+    else:
+        info['energy_resolution'] = temp[0]
+
+    # for idx in spws:
+    #     logging.error('idx is {} len is {}'.format(idx, len(msmd.chanwidths(idx))))
+    #     logging.error(msmd.chanwidths(idx))
+    #
+    #     # info['energy_resolution'] = msmd.chanres(idx)
+    #     logging.error('chanres len is {}'.format(len(msmd.chanres(idx))))
+    #     logging.error(msmd.chanres(idx))
+
+
+    # PD - 05-09-19
+    # sampleSize is the size of one element (aka pixel):
+    #   - time in days for time axis
+    #
+    # HK 05-09-19
+    # For the time dimension:
+    #
+    # - sampleSize --> # of elements in msmd.timesforfield
+    # assume index of 0 because only get to this point if there's a single
+    # field named
+    sample_size = len(msmd.timesforfield(0))
     info['sample_size'] = sample_size
-    info['energy_resolution'] = energy_resolution
+    info['provenance'] = provenance
 
     # print(dir(msmd))
     # try:
@@ -259,7 +358,6 @@ def get_info(filename):
     #                                                  'statesforscan',
     #                                                  'this',
     #                                                  'timerangeforobs',
-    #                                                  'timesforfield',
     #                                                  'timesforscan',
     #                                                  'timesforscans'
     #                                                  ]:
@@ -273,3 +371,4 @@ def get_info(filename):
 
 if __name__ == '__main__':
     run_gen()
+    # run_gen_specific()

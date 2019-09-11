@@ -105,6 +105,9 @@ class AlmacaName(ec.StorageName):
         self._obs_id = '{}.{}.{}'.format(
             temp[0], temp[1], temp[2]).replace('uid___', '')
         self._product_id = temp[3]
+        self._mous_id = AlmacaName.to_uid(
+            fname_on_disk.split('/calibrated')[0].split('/')[-1].replace(
+                'member.', ''))
 
     @property
     def product_id(self):
@@ -115,15 +118,28 @@ class AlmacaName(ec.StorageName):
         return PlaneURI(ec.CaomName.make_plane_uri(
             ARCHIVE, self._obs_id, self._product_id))
 
+    @property
+    def mous_id(self):
+        return self._mous_id
+
+    @staticmethod
+    def to_uid(value):
+        return value.replace('___', '://').replace('_', '/')
+
 
 def build_position(fqn, db_content, field_index, md_name):
-    f_name = md_name.replace('md_', 'listobs_').replace('.pk', '.txt')
-    with open(f_name) as f:
-        temp = f.readlines()
+    # f_name = md_name.replace('md', 'listobs_').replace('.pk', '.txt')
+    f_names = os.listdir(os.path.dirname(md_name))
     index = -1
-    for ii in temp:
-        if 'RA               Decl' in ii:
-            index = temp.index(ii) + 1
+    for f_name in f_names:
+        if 'listobs' in f_name:
+            fqn = '{}/{}'.format(os.path.dirname(md_name), f_name)
+            with open(fqn) as f:
+                temp = f.readlines()
+            for ii in temp:
+                if 'RA               Decl' in ii:
+                    index = temp.index(ii) + 1
+                    break
             break
 
     if index == -1:
@@ -216,7 +232,7 @@ def build_energy(spectral_windows, sample_size):
 
 
 def _add_subinterval(si_list, subinterval):
-    # Adds and interval to a list of intervals eliminating (merging) any
+    # Adds an interval to a list of intervals eliminating (merging) any
     # overlaps
 
     if not si_list:
@@ -245,14 +261,23 @@ def _add_subinterval(si_list, subinterval):
 
 
 def build_time(override):
+
+    # HK 05-09-19
+    # For the time dimension:
+    # - resolution: this is far less clear to me, but I think in principle,
+    # once could try to make an image using some time-based subset of the full
+    # measurement set.  So in principle, I suppose one could make [sampleSize]
+    # independent images.  In practice, there probably would be insufficient
+    # data to actually make decent images for such a small subset of the
+    # data.  Something like the number of times that the source is observed in
+    # between calibrators would probably be a more appropriate / practical
+    # level of time sampling, but I don't think there would be an easy way to
+    # pull that information out of the metadata.  The time resolution value
+    # could be listed as 'null' to avoid the confusion.
+    resolution = None
+
     start_date = mc.to_float(override.get('start_date'))
     end_date = mc.to_float(override.get('end_date'))
-
-    # HK 14-08-19
-    # If 'time.resolution' is supposed to be the number of measurements
-    # taken, then I think the value that should be saved for that
-    # parameter is the total of all len(msmd.timesforscan(scan)) values
-    resolution = mc.to_float(override.get('resolution'))
 
     # HK 14-08-09
     # If 'exposure' is supposed to be the total (useful) exposure time
@@ -367,7 +392,7 @@ def _build_obs(override, db_content, fqn, index, almaca_name):
     return observation
 
 
-def _get_version(fqn):
+def get_provenance(fqn):
     # HK 14-08-19
     # provenance: version - capture the information on what version of
     # CASA was used to run the calibration script.  We might appreciate
@@ -375,40 +400,48 @@ def _get_version(fqn):
     # This would be possible to capture from the 'casa[date].log' file
     # generated automatically during processing - the second line
     # includes 'CASA version XXX'.
-    version_result = ''
+    version_result = None
+    last_result = None
     log_dir = '{}/script'.format(fqn.split('calibrated')[0])
-    log_dir_contents = os.listdir(log_dir)
-    for ii in log_dir_contents:
-        if ii.startswith('casa-') and ii.endswith('.log'):
-            log_fqn = '{}/{}'.format(log_dir, ii)
-            with open(log_fqn, 'r') as f:
-                temp = f.readlines()
-            for jj in temp:
-                if 'CASA Version' in jj:
-                    version_result = jj.split(
-                        'casa')[1].replace(':', '').strip()
+    if os.path.exists(log_dir):
+        log_dir_contents = os.listdir(log_dir)
+        for ii in log_dir_contents:
+            if ii.startswith('casa-') and ii.endswith('.log'):
+                log_fqn = '{}/{}'.format(log_dir, ii)
+                if os.path.exists(log_fqn):
+                    with open(log_fqn, 'r') as f:
+                        temp = f.readlines()
+                    for jj in temp:
+                        if 'CASA Version' in jj:
+                            version_result = jj.split(
+                                'casa')[1].replace(':', '').strip()
 
-            # get the timestamp from the filename, use it as the
-            # 'last_executed'
-            temp = ii.replace('casa-', '').replace('.log', '')
-            last_result = datetime.fromtimestamp(mc.make_seconds(temp))
-    return version_result, last_result
+                    # get the timestamp from the filename, use it as the
+                    # 'last_executed'
+                    temp = ii.replace('casa-', '').replace('.log', '')
+                    last_result = datetime.fromtimestamp(mc.make_seconds(temp))
+    # TODO time.Time(override.get('casa_run_date')).datetime
+    return Provenance(name='CASA',
+                      version=version_result,
+                      last_executed=last_result,
+                      reference='https://casa.nrao.edu/')
 
 
-def _get_index(fqn, db_content):
+def _get_index(almaca_name, db_content):
+    # HK - conversation - 10-09-19
+    # use the Member_ous_id for the field index
     count = 0
     found = False
-    asdm_uid = fqn.split('/')[-1].split('.')[0].replace('___', '://').replace('_', '/')
-    for ii in db_content['Asdm_uid']:
-        if ii == asdm_uid:
+    for ii in db_content['Member_ous_id']:
+        if ii == almaca_name.mous_id:
+            index = count
             found = True
             break
         count += 1
-    if found:
-        index = count
-    else:
-        raise mc.CadcException('Could not find index for {}'.format(asdm_uid))
-    logging.error('index is {}'.format(count))
+
+    if not found:
+        raise mc.CadcException(
+            'Could not find field index for {}'.format(almaca_name.mous_id))
     return index
 
 
@@ -416,22 +449,17 @@ def build_observation(override, db_content, observation, md_name):
 
     fqn = override.get('fqn')
     almaca_name = AlmacaName(fname_on_disk=fqn)
-    field_index = _get_index(fqn, db_content)
+    field_index = _get_index(almaca_name, db_content)
     if observation is None:
         observation = _build_obs(override, db_content, fqn, field_index,
                                  almaca_name)
 
-    version, last_executed = _get_version(fqn)
-    # TODO time.Time(override.get('casa_run_date')).datetime
-    provenance = Provenance(name="CASA",
-                            version="{}".format(version),
-                            last_executed=last_executed,
-                            reference="https://casa.nrao.edu/")
+    provenance = get_provenance(fqn)
 
     if fqn is None or '.SCI.' in fqn:
         product_type = ProductType.SCIENCE
-        ip = AlmacaName(override.get('provenance'))
-        provenance.inputs.add(ip.input_uri)
+        # ip = AlmacaName(override.get('provenance'))
+        # provenance.inputs.add(ip.input_uri)
     else:
         product_type = ProductType.CALIBRATION
 
