@@ -14,10 +14,10 @@
     <caom2:project>uid://A001/X3ab/X10</caom2:project>
     <caom2:title>Resolving GMCs using CO Absorption Toward Compact QSOs Directly Behind the MW Disk</caom2:title>
     <caom2:keywords>
-      <caom2:keyword>(ISM)/Molecular</caom2:keyword>
-      <caom2:keyword>clouds</caom2:keyword>
       <caom2:keyword>Inter-Stellar</caom2:keyword>
+      <caom2:keyword>clouds</caom2:keyword>
       <caom2:keyword>Medium</caom2:keyword>
+      <caom2:keyword>(ISM)/Molecular</caom2:keyword>
     </caom2:keywords>
   </caom2:proposal>
   <caom2:target>
@@ -72,7 +72,7 @@
           </caom2:samples>
         </caom2:bounds>
         <caom2:dimension>1</caom2:dimension>
-        <caom2:sampleSize>46.0</caom2:sampleSize>
+        <caom2:sampleSize>15625000.0</caom2:sampleSize>
         <caom2:bandpassName>Band 3</caom2:bandpassName>
         <caom2:emBand>Millimeter</caom2:emBand>
       </caom2:energy>
@@ -133,7 +133,7 @@
           </caom2:samples>
         </caom2:bounds>
         <caom2:dimension>1</caom2:dimension>
-        <caom2:sampleSize>25.0</caom2:sampleSize>
+        <caom2:sampleSize>15258.7890625</caom2:sampleSize>
         <caom2:bandpassName>Band 3</caom2:bandpassName>
         <caom2:emBand>Millimeter</caom2:emBand>
       </caom2:energy>
@@ -194,7 +194,7 @@
           </caom2:samples>
         </caom2:bounds>
         <caom2:dimension>1</caom2:dimension>
-        <caom2:sampleSize>25.0</caom2:sampleSize>
+        <caom2:sampleSize>15258.7890625</caom2:sampleSize>
         <caom2:bandpassName>Band 3</caom2:bandpassName>
         <caom2:emBand>Millimeter</caom2:emBand>
       </caom2:energy>

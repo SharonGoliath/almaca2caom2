@@ -74,7 +74,7 @@
           </caom2:samples>
         </caom2:bounds>
         <caom2:dimension>1</caom2:dimension>
-        <caom2:sampleSize>46.0</caom2:sampleSize>
+        <caom2:sampleSize>15625000.0</caom2:sampleSize>
         <caom2:bandpassName>Band 3</caom2:bandpassName>
         <caom2:emBand>Millimeter</caom2:emBand>
       </caom2:energy>
@@ -137,7 +137,7 @@
           </caom2:samples>
         </caom2:bounds>
         <caom2:dimension>1</caom2:dimension>
-        <caom2:sampleSize>25.0</caom2:sampleSize>
+        <caom2:sampleSize>15258.7890625</caom2:sampleSize>
         <caom2:bandpassName>Band 3</caom2:bandpassName>
         <caom2:emBand>Millimeter</caom2:emBand>
       </caom2:energy>
@@ -200,7 +200,7 @@
           </caom2:samples>
         </caom2:bounds>
         <caom2:dimension>1</caom2:dimension>
-        <caom2:sampleSize>25.0</caom2:sampleSize>
+        <caom2:sampleSize>30517.578125</caom2:sampleSize>
         <caom2:bandpassName>Band 3</caom2:bandpassName>
         <caom2:emBand>Millimeter</caom2:emBand>
       </caom2:energy>

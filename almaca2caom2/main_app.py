@@ -127,6 +127,10 @@ class AlmacaName(ec.StorageName):
         return value.replace('___', '://').replace('_', '/')
 
 
+def _get_band_name(override):
+    return 'Band {}'.format(override.get('band'))
+
+
 def build_position(fqn, db_content, field_index, md_name):
     # f_name = md_name.replace('md', 'listobs_').replace('.pk', '.txt')
     f_names = os.listdir(os.path.dirname(md_name))
@@ -162,7 +166,7 @@ def build_position(fqn, db_content, field_index, md_name):
     # little larger than the value of 24 given in caom2.
 
     # , radius=24 * units.arcsec
-    fov = db_content['Field_of_view'][field_index]
+    fov = db_content['Field of view'][field_index]
     radius = (fov / 2.0) * units.arcsec
     bounds = shape.Circle(
         center=shape.Point(result.ra.degree, result.dec.degree),
@@ -172,7 +176,10 @@ def build_position(fqn, db_content, field_index, md_name):
                     time_dependent=False)
 
 
-def build_energy(spectral_windows, sample_size):
+def build_energy(override):
+
+    spectral_windows = override.get('spectral_windows')
+    sample_size = override.get('energy_sample_size')
 
     # HK 19-08-19
     # I'm still not quite sure that I follow this one.  I understand your
@@ -228,6 +235,12 @@ def build_energy(spectral_windows, sample_size):
 
     energy.bounds = Interval(min_bound, max_bound, samples=samples)
     energy.sample_size = mc.to_float(sample_size)
+    energy.resolving_power = override.get('energy_resolution')
+
+    # HK 3-10-19
+    # energy: bandpassName: could this also be Band3?  (I know it is already
+    # listed under 'instrument' in the top level plane)
+    energy.bandpass_name = _get_band_name(override)
     return energy
 
 
@@ -299,7 +312,7 @@ def build_time(override):
 
 def _build_obs(override, db_content, fqn, index, almaca_name):
 
-    obs_date = db_content['Observation_date'][index]
+    obs_date = db_content['Observation date'][index]
     if obs_date is None:
         raise mc.CadcException('No observation date for {}'.format(fqn))
     else:
@@ -308,13 +321,13 @@ def _build_obs(override, db_content, fqn, index, almaca_name):
     # of_site('alma')
     # 2225015.30883296, -5440016.41799762, -2481631.27428014
     #
-    size = db_content['Array'][index].decode()
+    size = db_content['Array'][index]
     telescope = Telescope(name="ALMA-{}".format(size),
                           geo_location_x=2225142.18,
                           geo_location_y=-5440307.37,
                           geo_location_z=-2481029.852)
 
-    instrument = Instrument(name="Band {}".format(override.get('band')))
+    instrument = Instrument(name=_get_band_name(override))
 
     # HK - 14-08-19
     # target: this should be the science target / science fieldname and
@@ -329,7 +342,7 @@ def _build_obs(override, db_content, fqn, index, almaca_name):
                     moving=False,
                     target_type=TargetType.OBJECT)
 
-    # db_content:
+    # db_content as votable:
     # >>> t.colnames
     # ['Project_code', 'Source_name', 'RA', 'Dec', 'Galactic_longitude',
     # 'Galactic_latitude', 'Band', 'Spatial_resolution',
@@ -341,6 +354,19 @@ def _build_obs(override, db_content, fqn, index, almaca_name):
     # 'Asdm_uid', 'Project_title', 'Project_type', 'Scan_intent',
     # 'Field_of_view', 'Largest_angular_scale', 'QA2_Status', 'COUNT',
     # 'Science_keyword', 'Scientific_category', 'ASA_PROJECT_CODE']
+    #
+    # db_content.colnames as html:
+    #
+    # ['Project code', 'Source name', 'RA', 'Dec', 'Galactic longitude',
+    # 'Galactic latitude', 'Band', 'Spatial resolution',
+    # 'Frequency resolution', 'Array', 'Mosaic', 'Integration',
+    # 'Release date', 'Frequency support', 'Velocity resolution',
+    # 'Pol products', 'Observation date', 'PI name', 'SB name',
+    # 'Proposal authors', 'Line sensitivity (10 km/s)',
+    # 'Continuum sensitivity', 'PWV', 'Group ous id', 'Member ous id',
+    # 'Asdm uid', 'Project title', 'Project type', 'Scan intent',
+    # 'Field of view', 'Largest angular scale', 'QA2 Status', 'COUNT',
+    # 'Science keyword', 'Scientific category', 'ASA_PROJECT_CODE']
 
     # HK - 14-08-19
     # can we include the project code, and not just the observation UID
@@ -349,12 +375,12 @@ def _build_obs(override, db_content, fqn, index, almaca_name):
     # measurement set, proposal: ID is now set to the UID and the project
     # code (2016.1.00010.S) is not captured anywhere.  Could the 'project'
     # field, currently set as 'null' be used for this?
-    proposal = Proposal(id=db_content['Project_code'][index],
+    proposal = Proposal(id=db_content['Project code'][index],
                         project=override.get('project'),
-                        pi_name=db_content['PI_name'][index],
-                        title=db_content['Project_title'][index])
+                        pi_name=db_content['PI name'][index],
+                        title=db_content['Project title'][index])
 
-    keywords = db_content['Science_keyword'][index]
+    keywords = db_content['Science keyword'][index]
     if keywords is not None:
         proposal.keywords = set(keywords.split())
 
@@ -402,8 +428,10 @@ def get_provenance(fqn):
     # includes 'CASA version XXX'.
     version_result = None
     last_result = None
-    log_dir = '{}/script'.format(fqn.split('calibrated')[0])
+    log_dir = '{}script'.format(fqn.split('calibrated')[0])
+    # logging.error('checking {}'.format(log_dir))
     if os.path.exists(log_dir):
+        # logging.error('exists {}'.format(log_dir))
         log_dir_contents = os.listdir(log_dir)
         for ii in log_dir_contents:
             if ii.startswith('casa-') and ii.endswith('.log'):
@@ -432,7 +460,7 @@ def _get_index(almaca_name, db_content):
     # use the Member_ous_id for the field index
     count = 0
     found = False
-    for ii in db_content['Member_ous_id']:
+    for ii in db_content['Member ous id']:
         if ii == almaca_name.mous_id:
             index = count
             found = True
@@ -449,6 +477,8 @@ def build_observation(override, db_content, observation, md_name):
 
     fqn = override.get('fqn')
     almaca_name = AlmacaName(fname_on_disk=fqn)
+    # logging.error(db_content.colnames)
+    # logging.error('fqn is {}'.format(fqn))
     field_index = _get_index(almaca_name, db_content)
     if observation is None:
         observation = _build_obs(override, db_content, fqn, field_index,
@@ -463,25 +493,21 @@ def build_observation(override, db_content, observation, md_name):
     else:
         product_type = ProductType.CALIBRATION
 
-    release_date = '2016-10-12 00:55:56'
-    # release_date = db_content['Release_date']
-    # the votable format is returning only '2' .... :(
+    release_date = db_content['Release date'][field_index]
     if release_date is None:
-        # import datetime
-        # release_date = datetime.datetime.utcnow()
         raise mc.CadcException('No release date for {}'.format(fqn))
     else:
         release_date = time.Time(release_date).to_datetime()
 
-    logging.error('Add plane {}'.format(almaca_name.product_id))
+    logging.error('Add plane {} to {}'.format(almaca_name.product_id,
+                                              almaca_name.obs_id))
     plane = Plane(product_id=almaca_name.product_id,
                   data_release=release_date,
                   meta_release=observation.meta_release,
                   provenance=provenance)
 
     plane.position = build_position(fqn, db_content, field_index, md_name)
-    plane.energy = build_energy(override.get('spectral_windows'),
-                                override.get('sample_size'))
+    plane.energy = build_energy(override)
     plane.polarization = None
     plane.time = build_time(override)
 
