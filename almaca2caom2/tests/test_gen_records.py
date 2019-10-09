@@ -45,7 +45,7 @@ def run_gen():
 def run_gen_specific():
     fqn = '/data/for_CADC/2016.1.00010.S/science_goal.uid___A001_X88b_X21/' \
           'group.uid___A001_X88b_X22/member.uid___A001_X88b_X23/calibrated/' \
-          'uid___A002_Xb945f7_X1551.SCI.J1851+0035.line_spw3.ms.split.cal'
+          'uid___A002_Xb945f7_X1551.SCI.J1851+0035.cont.ms.split.cal'
     import logging
     pk_file = '{}/md.pk'.format(fqn)
     if os.path.exists(pk_file):
@@ -88,8 +88,13 @@ def test_gen():
     # from astroquery.alma import Alma
     # from astropy.table import Table
     # db_table = Alma().query(payload={'project_code': '2016.1.00010.S'})
-    # db_table.write('{}/alma_query.xml'.format(TEST_DATA_DIR),
-    # format='votable')
+    # # db_table.write('{}/alma_query.xml'.format(TEST_DATA_DIR),
+    # # format='votable')
+    # db_table.write('{}/alma_query2.xml'.format(TEST_DATA_DIR), format='html')
+
+    # FYI - this has values
+    # import logging
+    # logging.error(db_table['Release date'])
     # assert False
 
     import logging
@@ -98,8 +103,8 @@ def test_gen():
     from almaca2caom2 import main_app as ma
 
     from astropy.table import Table
-    db_fqn = '{}/alma_query.xml'.format(ALMA_QUERY_DIR)
-    db_content = Table.read(db_fqn, format='votable')
+    db_fqn = '{}/alma_query.html'.format(ALMA_QUERY_DIR)
+    db_content = Table.read(db_fqn, format='html')
 
     obs_lookup = {}
     obs = None
@@ -108,6 +113,7 @@ def test_gen():
             if dir_name.endswith('ms.split.cal'):
                 fqn = '{}/{}/md.pk'.format(root, dir_name)
                 if not os.path.exists(fqn):
+                    logging.error('missing md for {}'.format(fqn))
                     continue
                 almaca_name = ma.AlmacaName(dir_name)
                 if obs is not None and almaca_name.obs_id != obs.observation_id:
@@ -138,7 +144,7 @@ def test_gen():
                 except Exception as e:
                     import traceback
                     logging.error(traceback.format_exc())
-                    # assert False
+                    assert False
 
     errors_found = False
     for obs in obs_lookup:
@@ -156,13 +162,14 @@ def test_gen():
                     actual.observation_id, '\n'.join([r for r in result]))
                 logging.error(msg)
                 errors_found = True
+                # assert False, obs_fqn
         else:
             raise AssertionError(
                 'Unexpected Observation {}'.format(actual.observation_id))
 
     if errors_found:
         raise AssertionError('Final failure.')
-    # assert False
+    assert False
 
 
 def get_info(filename, provenance):
@@ -259,15 +266,6 @@ def get_info(filename, provenance):
     else:
         info['energy_resolution'] = temp[0]
 
-    # for idx in spws:
-    #     logging.error('idx is {} len is {}'.format(idx, len(msmd.chanwidths(idx))))
-    #     logging.error(msmd.chanwidths(idx))
-    #
-    #     # info['energy_resolution'] = msmd.chanres(idx)
-    #     logging.error('chanres len is {}'.format(len(msmd.chanres(idx))))
-    #     logging.error(msmd.chanres(idx))
-
-
     # PD - 05-09-19
     # sampleSize is the size of one element (aka pixel):
     #   - time in days for time axis
@@ -276,9 +274,12 @@ def get_info(filename, provenance):
     # For the time dimension:
     #
     # - sampleSize --> # of elements in msmd.timesforfield
-    # assume index of 0 because only get to this point if there's a single
-    # field named
-    sample_size = len(msmd.timesforfield(0))
+    # got through all the elements identified by msmd.fieldsfortimes, not just
+    # the 0th one
+    fields_for_times = msmd.fieldsfortimes()
+    sample_size = 0
+    for field in fields_for_times:
+        sample_size += len(msmd.timesforfield(field))
     info['sample_size'] = sample_size
     info['provenance'] = provenance
 
@@ -370,5 +371,5 @@ def get_info(filename, provenance):
 
 
 if __name__ == '__main__':
-    run_gen()
-    # run_gen_specific()
+    # run_gen()
+    run_gen_specific()

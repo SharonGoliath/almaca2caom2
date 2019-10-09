@@ -203,19 +203,18 @@ def build_energy(override):
 
     wvlns = []
     mid_wvln = []
-    min_wvlns_sgo = []
 
     for spw in spectral_windows:
         wvln = numpy.array((c / spw[0], c / spw[1]))
+        logging.error('wvln {} spw {}'.format(wvln, spw))
         wvlns.append(wvln)
-        min_wvlns_sgo.append(wvln[1])
         mid_wvln.append(wvln[0] + wvln[1])
-    order_sgo = numpy.argsort(min_wvlns_sgo)
+    order = numpy.argsort(mid_wvln)
 
     min_bound = None
     max_bound = None
     si = []
-    for idx in order_sgo:
+    for idx in order:
         lower = min(wvlns[idx])
         upper = max(wvlns[idx])
 
@@ -235,7 +234,7 @@ def build_energy(override):
 
     energy.bounds = Interval(min_bound, max_bound, samples=samples)
     energy.sample_size = mc.to_float(sample_size)
-    energy.resolving_power = override.get('energy_resolution')
+    energy.resolving_power = mc.to_float(override.get('energy_resolution'))
 
     # HK 3-10-19
     # energy: bandpassName: could this also be Band3?  (I know it is already
