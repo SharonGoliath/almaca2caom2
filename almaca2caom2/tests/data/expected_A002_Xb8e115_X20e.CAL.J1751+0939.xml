@@ -14,10 +14,10 @@
     <caom2:project>uid://A001/X3ab/X10</caom2:project>
     <caom2:title>Resolving GMCs using CO Absorption Toward Compact QSOs Directly Behind the MW Disk</caom2:title>
     <caom2:keywords>
-      <caom2:keyword>(ISM)/Molecular</caom2:keyword>
-      <caom2:keyword>Medium</caom2:keyword>
-      <caom2:keyword>Inter-Stellar</caom2:keyword>
       <caom2:keyword>clouds</caom2:keyword>
+      <caom2:keyword>(ISM)/Molecular</caom2:keyword>
+      <caom2:keyword>Inter-Stellar</caom2:keyword>
+      <caom2:keyword>Medium</caom2:keyword>
     </caom2:keywords>
   </caom2:proposal>
   <caom2:target>
@@ -36,14 +36,14 @@
     <caom2:name>Band 6</caom2:name>
   </caom2:instrument>
   <caom2:environment>
-    <caom2:tau>1.240063538270838</caom2:tau>
+    <caom2:tau>1.2400635294117648</caom2:tau>
     <caom2:wavelengthTau>0.00035</caom2:wavelengthTau>
   </caom2:environment>
   <caom2:planes>
     <caom2:plane caom2:id="ab3baf3e-171a-4b3a-b84e-8f0522bc1034">
       <caom2:productID>cont</caom2:productID>
       <caom2:metaRelease>2016-09-30T22:21:09.000</caom2:metaRelease>
-      <caom2:dataRelease>2016-10-12T00:55:56.000</caom2:dataRelease>
+      <caom2:dataRelease>2017-12-21T00:00:00.000</caom2:dataRelease>
       <caom2:dataProductType>visibility</caom2:dataProductType>
       <caom2:calibrationLevel>2</caom2:calibrationLevel>
       <caom2:provenance>
@@ -73,6 +73,7 @@
         </caom2:bounds>
         <caom2:dimension>1</caom2:dimension>
         <caom2:sampleSize>46.0</caom2:sampleSize>
+        <caom2:bandpassName>Band 6</caom2:bandpassName>
         <caom2:emBand>Millimeter</caom2:emBand>
       </caom2:energy>
       <caom2:time>
@@ -103,7 +104,7 @@
     <caom2:plane caom2:id="4222236b-342f-4fb0-90a2-d3ef50fba6db">
       <caom2:productID>line_spw2</caom2:productID>
       <caom2:metaRelease>2016-09-30T22:21:09.000</caom2:metaRelease>
-      <caom2:dataRelease>2016-10-12T00:55:56.000</caom2:dataRelease>
+      <caom2:dataRelease>2017-12-21T00:00:00.000</caom2:dataRelease>
       <caom2:dataProductType>visibility</caom2:dataProductType>
       <caom2:calibrationLevel>2</caom2:calibrationLevel>
       <caom2:provenance>
@@ -145,6 +146,7 @@
         </caom2:bounds>
         <caom2:dimension>1</caom2:dimension>
         <caom2:sampleSize>46.0</caom2:sampleSize>
+        <caom2:bandpassName>Band 6</caom2:bandpassName>
         <caom2:emBand>Millimeter</caom2:emBand>
       </caom2:energy>
       <caom2:time>
@@ -175,7 +177,7 @@
     <caom2:plane caom2:id="40f281d2-5b00-40d9-980b-4f4a5cca292a">
       <caom2:productID>line_spw3</caom2:productID>
       <caom2:metaRelease>2016-09-30T22:21:09.000</caom2:metaRelease>
-      <caom2:dataRelease>2016-10-12T00:55:56.000</caom2:dataRelease>
+      <caom2:dataRelease>2017-12-21T00:00:00.000</caom2:dataRelease>
       <caom2:dataProductType>visibility</caom2:dataProductType>
       <caom2:calibrationLevel>2</caom2:calibrationLevel>
       <caom2:provenance>
@@ -217,6 +219,7 @@
         </caom2:bounds>
         <caom2:dimension>1</caom2:dimension>
         <caom2:sampleSize>46.0</caom2:sampleSize>
+        <caom2:bandpassName>Band 6</caom2:bandpassName>
         <caom2:emBand>Millimeter</caom2:emBand>
       </caom2:energy>
       <caom2:time>
@@ -247,7 +250,7 @@
     <caom2:plane caom2:id="4310388a-f3da-42f1-b6c2-8e4dec2be2b1">
       <caom2:productID>line_spw1</caom2:productID>
       <caom2:metaRelease>2016-09-30T22:21:09.000</caom2:metaRelease>
-      <caom2:dataRelease>2016-10-12T00:55:56.000</caom2:dataRelease>
+      <caom2:dataRelease>2017-12-21T00:00:00.000</caom2:dataRelease>
       <caom2:dataProductType>visibility</caom2:dataProductType>
       <caom2:calibrationLevel>2</caom2:calibrationLevel>
       <caom2:provenance>
@@ -289,6 +292,7 @@
         </caom2:bounds>
         <caom2:dimension>1</caom2:dimension>
         <caom2:sampleSize>46.0</caom2:sampleSize>
+        <caom2:bandpassName>Band 6</caom2:bandpassName>
         <caom2:emBand>Millimeter</caom2:emBand>
       </caom2:energy>
       <caom2:time>
