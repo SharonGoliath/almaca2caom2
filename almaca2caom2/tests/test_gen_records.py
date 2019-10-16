@@ -45,7 +45,7 @@ def run_gen():
 def run_gen_specific():
     fqn = '/data/for_CADC/2016.1.00010.S/science_goal.uid___A001_X88b_X21/' \
           'group.uid___A001_X88b_X22/member.uid___A001_X88b_X23/calibrated/' \
-          'uid___A002_Xb945f7_X1551.SCI.J1851+0035.cont.ms.split.cal'
+          'uid___A002_Xb945f7_X1551.SCI.J1851+0035.line_spw3.ms.split.cal'
     import logging
     pk_file = '{}/md.pk'.format(fqn)
     if os.path.exists(pk_file):
@@ -162,14 +162,14 @@ def test_gen():
                     actual.observation_id, '\n'.join([r for r in result]))
                 logging.error(msg)
                 errors_found = True
-                # assert False, obs_fqn
+                assert False, obs_fqn
         else:
             raise AssertionError(
                 'Unexpected Observation {}'.format(actual.observation_id))
 
     if errors_found:
         raise AssertionError('Final failure.')
-    assert False
+    # assert False
 
 
 def get_info(filename, provenance):
@@ -201,7 +201,8 @@ def get_info(filename, provenance):
     spws = msmd.spwsforfield(field)
     spectral_windows = []
     for idx in spws:
-        spectral_windows.append((min(msmd.chanfreqs(idx)), max(msmd.chanfreqs(idx))))
+        spectral_windows.append((min(msmd.chanfreqs(idx, 'Hz')),
+                                 max(msmd.chanfreqs(idx, 'Hz'))))
     info['spectral_windows'] = spectral_windows
     dates = msmd.timerangeforobs(0)
     info['start_date'] = dates['begin']['m0']['value']
@@ -251,7 +252,7 @@ def get_info(filename, provenance):
     # differ by a factor of 2, i.e., binning every 2 channels is expected)
 
     # assuming 0th index, assuming the widths are the same for all
-    chan_widths = msmd.chanwidths(0)
+    chan_widths = msmd.chanwidths(0, 'Hz')
     temp = list(set(chan_widths))
     if len(temp) > 1:
         logging.warning('Found multiple values for chan_widths')
@@ -259,12 +260,21 @@ def get_info(filename, provenance):
         info['energy_sample_size'] = chan_widths[0]
 
     # assuming 0th index, assuming the res is the same for all
-    chan_res = msmd.chanres(0)
+    chan_res = msmd.chanres(0, 'Hz', asvel=False)
     temp = list(set(chan_res))
     if len(temp) > 1:
         logging.warning('Found multiple values for chan_res')
     else:
         info['energy_resolution'] = temp[0]
+
+    # for idx in spws:
+    #     logging.error('idx is {} len is {}'.format(idx, len(msmd.chanwidths(idx))))
+    #     logging.error(msmd.chanwidths(idx))
+    #
+    #     # info['energy_resolution'] = msmd.chanres(idx)
+    #     logging.error('chanres len is {}'.format(len(msmd.chanres(idx))))
+    #     logging.error(msmd.chanres(idx))
+
 
     # PD - 05-09-19
     # sampleSize is the size of one element (aka pixel):
@@ -280,9 +290,16 @@ def get_info(filename, provenance):
     sample_size = 0
     for field in fields_for_times:
         sample_size += len(msmd.timesforfield(field))
-    info['sample_size'] = sample_size
+    info['time_sample_size'] = sample_size
     info['provenance'] = provenance
 
+    msmd.done()
+    # testing below
+    # print('bandwidths')
+    # print(msmd.bandwidths())
+    # print('chanfreqs')
+    # for ii in spws:
+    #     print(msmd.chanfreqs(ii))
     # print(dir(msmd))
     # try:
     #     for ii in dir(msmd):
@@ -371,5 +388,5 @@ def get_info(filename, provenance):
 
 
 if __name__ == '__main__':
-    # run_gen()
-    run_gen_specific()
+    run_gen()
+    # run_gen_specific()

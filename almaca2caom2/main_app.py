@@ -68,21 +68,20 @@
 #
 
 import logging
-import math
 import numpy
 import os
 
 from datetime import datetime
 
 from astropy import units, time, constants
-from caom2 import SegmentType, Vertex, Point, Position, Polygon, shape
 from caom2 import Energy, EnergyBand, shape, Interval, Algorithm
-from caom2 import Telescope, Instrument, Target, Proposal
+from caom2 import Telescope, Instrument, Target, Proposal, Position
 from caom2 import CompositeObservation, Provenance, Artifact, Plane
 from caom2 import DataProductType, CalibrationLevel, TargetType
 from caom2 import ReleaseType, ProductType, ObservationIntentType
 from caom2 import Time, ObservationURI, Environment, PlaneURI
 
+from caom2pipe import astro_composable as ac
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
 
@@ -101,13 +100,17 @@ class AlmacaName(ec.StorageName):
         super(AlmacaName, self).__init__(collection=ARCHIVE,
                                          collection_pattern='*',
                                          fname_on_disk=fname_on_disk)
-        temp = fname_on_disk.split('/')[-1].split('.')
+        ms = fname_on_disk.split('/')[-1]
+        temp = ms.split('.')
         self._obs_id = '{}.{}.{}'.format(
             temp[0], temp[1], temp[2]).replace('uid___', '')
         self._product_id = temp[3]
+        calibrated = fname_on_disk.split('/calibrated')[0]
         self._mous_id = AlmacaName.to_uid(
-            fname_on_disk.split('/calibrated')[0].split('/')[-1].replace(
-                'member.', ''))
+            calibrated.split('/')[-1].replace('member.', ''))
+        self._ms = ms
+        self._log_dir = '{}/script'.format(calibrated)
+
 
     @property
     def product_id(self):
@@ -119,8 +122,16 @@ class AlmacaName(ec.StorageName):
             ARCHIVE, self._obs_id, self._product_id))
 
     @property
+    def log_dir(self):
+        return self._log_dir
+
+    @property
     def mous_id(self):
         return self._mous_id
+
+    @property
+    def uri(self):
+        return mc.build_uri(ARCHIVE, '{}.tar.gz'.format(self._ms))
 
     @staticmethod
     def to_uid(value):
@@ -131,8 +142,7 @@ def _get_band_name(override):
     return 'Band {}'.format(override.get('band'))
 
 
-def build_position(fqn, db_content, field_index, md_name):
-    # f_name = md_name.replace('md', 'listobs_').replace('.pk', '.txt')
+def build_position(db_content, field_index, md_name):
     f_names = os.listdir(os.path.dirname(md_name))
     index = -1
     for f_name in f_names:
@@ -151,13 +161,7 @@ def build_position(fqn, db_content, field_index, md_name):
 
     ra = temp[index].split()[3]
     dec = temp[index].split()[4].replace('.', ':', 2)
-    # logging.error('ra {} dec {}'.format(ra, dec))
-
-    from astropy import units
-    from astropy.coordinates import SkyCoord
-
-    result = SkyCoord(ra, dec, frame='icrs',
-                      unit=(units.hourangle, units.deg))
+    result_ra, result_dec = ac.build_ra_dec_as_deg(ra, dec)
 
     # HK 19-08-19
     # Looking at the ALMA web archive listing, it claims a 'FOV' (field of
@@ -169,7 +173,7 @@ def build_position(fqn, db_content, field_index, md_name):
     fov = db_content['Field of view'][field_index]
     radius = (fov / 2.0) * units.arcsec
     bounds = shape.Circle(
-        center=shape.Point(result.ra.degree, result.dec.degree),
+        center=shape.Point(result_ra, result_dec),
         radius=radius.value)
     return Position(bounds=bounds,
                     sample_size=None,
@@ -199,14 +203,12 @@ def build_energy(override):
     energy = Energy()
     energy.em_band = EnergyBand.MILLIMETER
     energy.dimension = 1
-    c = constants.c.to('m/s').value
 
     wvlns = []
     mid_wvln = []
 
     for spw in spectral_windows:
-        wvln = numpy.array((c / spw[0], c / spw[1]))
-        logging.error('wvln {} spw {}'.format(wvln, spw))
+        wvln = numpy.array((_from_hz_to_m(spw[0]), _from_hz_to_m(spw[1])))
         wvlns.append(wvln)
         mid_wvln.append(wvln[0] + wvln[1])
     order = numpy.argsort(mid_wvln)
@@ -233,14 +235,60 @@ def build_energy(override):
         samples.append(shape.SubInterval(s[0], s[1]))
 
     energy.bounds = Interval(min_bound, max_bound, samples=samples)
-    energy.sample_size = mc.to_float(sample_size)
-    energy.resolving_power = mc.to_float(override.get('energy_resolution'))
+
+    # HK 15-10-19
+    #
+    # It looks like the caom2 model puts energy in wavelength units (I'm not
+    # clear whether that is metres or centimetres?), whereas the numbers
+    # I quoted above are directly from msmd and are given in frequency units
+    # of Hertz.  I'm not sure what level of precision you would use for the
+    # conversion, but here's roughly what you'd want to do:
+    #
+    # [resolution in wavelength units] / [central wavelength] =
+    # [resolution in frequency units] /[central frequency]
+    #
+    # Using [central wavelength] = [speed of light] / [central frequency], and
+    # a speed of light of 2.9979e8 m/s (or whatever precision you need, and
+    # convert to cm/s if needed), you should be able to run the calculation
+    # with values you've already extracted.  For a central frequency of
+    # 113GHz, I get a value of about 3.7e-7 m, assuming I've done my quick
+    # calculation correctly.
+    #
+    # NB: since both the sampleSize and resolution parameters are looking at a
+    # differential wavelength measurement, both conversions would follow the
+    # same formula as I've written.
+    #
+    energy.sample_size = _from_hz_to_m(mc.to_float(sample_size))
+    energy.resolving_power = _from_hz_to_m(
+        mc.to_float(override.get('energy_resolution')))
 
     # HK 3-10-19
     # energy: bandpassName: could this also be Band3?  (I know it is already
     # listed under 'instrument' in the top level plane)
     energy.bandpass_name = _get_band_name(override)
     return energy
+
+
+def _from_hz_to_m(value):
+    # JJK 15-10-19
+    # I'll just interject into here that what the pyCAOM code should do (and
+    # I really mean should) is accept values that have units when
+    # instantiating the object and then convert that to the correct unit when
+    # building the XML.   (turn away Helen!)  This could be achieved VERY
+    # easily in python using astropy.units and would save a large number of
+    # foot-gun situations.  Eg.
+    #
+    # caom2.plane.Energy(bounds=[lower_frequency*units.GHz,
+    #                    upper_frequency*units.GHz])
+    #
+    # and then Energy uses those values as lower_frequency.to(units.m).value
+    # when sending to the service.
+    #
+    # If a value (rather than a Quantity) is sent to Energy (ie no units)
+    # then Energy can assume they are in m or through an error, but for
+    # backwards friendly it should accept this as unit.m by default and cast
+    # the value to a unit.m Quantity
+    return (value * units.Hz).to(units.m, equivalencies=units.spectral()).value
 
 
 def _add_subinterval(si_list, subinterval):
@@ -305,7 +353,7 @@ def build_time(override):
     return Time(bounds=time_bounds,
                 dimension=1,
                 resolution=resolution,
-                sample_size=mc.to_float(override.get('sample_size')),
+                sample_size=mc.to_float(override.get('time_sample_size')),
                 exposure=exposure_time)
 
 
@@ -384,7 +432,7 @@ def _build_obs(override, db_content, fqn, index, almaca_name):
         proposal.keywords = set(keywords.split())
 
     environment = Environment()
-    environment.tau = db_content['PWV'][0]/0.935 + 0.35
+    environment.tau = db_content['PWV'][index]/0.935 + 0.35
     environment.wavelength_tau = 350*units.um.to(units.meter)
 
     fqn = override.get('fqn')
@@ -417,7 +465,7 @@ def _build_obs(override, db_content, fqn, index, almaca_name):
     return observation
 
 
-def get_provenance(fqn):
+def get_provenance(almaca_name):
     # HK 14-08-19
     # provenance: version - capture the information on what version of
     # CASA was used to run the calibration script.  We might appreciate
@@ -427,8 +475,8 @@ def get_provenance(fqn):
     # includes 'CASA version XXX'.
     version_result = None
     last_result = None
-    log_dir = '{}script'.format(fqn.split('calibrated')[0])
-    # logging.error('checking {}'.format(log_dir))
+    log_dir = almaca_name.log_dir
+    logging.error('checking {}'.format(log_dir))
     if os.path.exists(log_dir):
         # logging.error('exists {}'.format(log_dir))
         log_dir_contents = os.listdir(log_dir)
@@ -457,6 +505,7 @@ def get_provenance(fqn):
 def _get_index(almaca_name, db_content):
     # HK - conversation - 10-09-19
     # use the Member_ous_id for the field index
+    index = None
     count = 0
     found = False
     for ii in db_content['Member ous id']:
@@ -483,7 +532,7 @@ def build_observation(override, db_content, observation, md_name):
         observation = _build_obs(override, db_content, fqn, field_index,
                                  almaca_name)
 
-    provenance = get_provenance(fqn)
+    provenance = get_provenance(almaca_name)
 
     if fqn is None or '.SCI.' in fqn:
         product_type = ProductType.SCIENCE
@@ -505,7 +554,7 @@ def build_observation(override, db_content, observation, md_name):
                   meta_release=observation.meta_release,
                   provenance=provenance)
 
-    plane.position = build_position(fqn, db_content, field_index, md_name)
+    plane.position = build_position(db_content, field_index, md_name)
     plane.energy = build_energy(override)
     plane.polarization = None
     plane.time = build_time(override)
@@ -516,8 +565,6 @@ def build_observation(override, db_content, observation, md_name):
     plane.calibration_level = CalibrationLevel.CALIBRATED
 
     observation.planes.add(plane)
-
-    uri_base = '{}.tar.gz'.format(fqn.split('/')[-1])
 
     # HK 29-07-19
     # qa/ contains images, plots, and web page status views generated
@@ -530,18 +577,10 @@ def build_observation(override, db_content, observation, md_name):
     # files are fairly small.
     # TODO override.get('artifact_uri')
     artifact = Artifact(
-        uri=mc.build_uri(ARCHIVE, uri_base),
+        uri=almaca_name.uri,
         product_type=product_type,
         release_type=ReleaseType.DATA,
         content_type='application/tar+gzip',
         content_length=None)
     plane.artifacts.add(artifact)
     return observation
-
-
-# t = Table.read('./alma_query.xml', format='votable')
-# t.info
-# t.colnames - case sensitive 'Asdm_uid'
-# for ii in t.colnames:
-#     print(ii)
-#     print(t[ii])
