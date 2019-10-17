@@ -14,9 +14,9 @@
     <caom2:project>uid://A001/X3ab/X10</caom2:project>
     <caom2:title>Resolving GMCs using CO Absorption Toward Compact QSOs Directly Behind the MW Disk</caom2:title>
     <caom2:keywords>
-      <caom2:keyword>Medium</caom2:keyword>
       <caom2:keyword>Inter-Stellar</caom2:keyword>
       <caom2:keyword>(ISM)/Molecular</caom2:keyword>
+      <caom2:keyword>Medium</caom2:keyword>
       <caom2:keyword>clouds</caom2:keyword>
     </caom2:keywords>
   </caom2:proposal>
@@ -56,8 +56,9 @@
             <caom2:cval1>282.9446795833333</caom2:cval1>
             <caom2:cval2>0.5923230555555556</caom2:cval2>
           </caom2:center>
-          <caom2:radius>12.876654594641147</caom2:radius>
+          <caom2:radius>0.0035768484985114293</caom2:radius>
         </caom2:bounds>
+        <caom2:resolution>0.13092279302964746</caom2:resolution>
         <caom2:timeDependent>false</caom2:timeDependent>
       </caom2:position>
       <caom2:energy>
@@ -118,8 +119,9 @@
             <caom2:cval1>282.9446795833333</caom2:cval1>
             <caom2:cval2>0.5923230555555556</caom2:cval2>
           </caom2:center>
-          <caom2:radius>12.876654594641147</caom2:radius>
+          <caom2:radius>0.0035768484985114293</caom2:radius>
         </caom2:bounds>
+        <caom2:resolution>0.13092279302964746</caom2:resolution>
         <caom2:timeDependent>false</caom2:timeDependent>
       </caom2:position>
       <caom2:energy>
@@ -192,8 +194,9 @@
             <caom2:cval1>282.9446795833333</caom2:cval1>
             <caom2:cval2>0.5923230555555556</caom2:cval2>
           </caom2:center>
-          <caom2:radius>12.876654594641147</caom2:radius>
+          <caom2:radius>0.0035768484985114293</caom2:radius>
         </caom2:bounds>
+        <caom2:resolution>0.13092279302964746</caom2:resolution>
         <caom2:timeDependent>false</caom2:timeDependent>
       </caom2:position>
       <caom2:energy>
@@ -266,8 +269,9 @@
             <caom2:cval1>282.9446795833333</caom2:cval1>
             <caom2:cval2>0.5923230555555556</caom2:cval2>
           </caom2:center>
-          <caom2:radius>12.876654594641147</caom2:radius>
+          <caom2:radius>0.0035768484985114293</caom2:radius>
         </caom2:bounds>
+        <caom2:resolution>0.13092279302964746</caom2:resolution>
         <caom2:timeDependent>false</caom2:timeDependent>
       </caom2:position>
       <caom2:energy>

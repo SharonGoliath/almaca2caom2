@@ -169,15 +169,28 @@ def build_position(db_content, field_index, md_name):
     # observed area. That corresponds to a radius of 26.69, which is a
     # little larger than the value of 24 given in caom2.
 
-    # , radius=24 * units.arcsec
     fov = db_content['Field of view'][field_index]
-    radius = (fov / 2.0) * units.arcsec
+    radius = ((fov / 2.0) * units.arcsec).to(units.degree)
     bounds = shape.Circle(
         center=shape.Point(result_ra, result_dec),
         radius=radius.value)
+
+    # HK 17-10-19
+    # Position: resolution: should not be null.  For the sample dataset that
+    # we've been iterating on, the alma web query lists a value of 0.4
+    # arcsec (the 'Ang. res.' parameter).  While this number in principle
+    # varies a little bit for the different spectral windows, I am not seeing
+    # an easy way to extract more precise values using msmd.  Since the
+    # achievable angular resolution actually depends a bit on how different
+    # baselines are weighted during imaging, there isn't an exact fixed value
+    # no matter what, so I think it would be fine to just use the ALMA web
+    # query value as being 'good enough'.
+    resolution = db_content['Spatial resolution'][field_index]
+
     return Position(bounds=bounds,
                     sample_size=None,
-                    time_dependent=False)
+                    time_dependent=False,
+                    resolution=resolution)
 
 
 def build_energy(override):

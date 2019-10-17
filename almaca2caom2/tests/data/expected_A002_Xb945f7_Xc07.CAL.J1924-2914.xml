@@ -14,9 +14,9 @@
     <caom2:project>uid://A001/X3ab/X10</caom2:project>
     <caom2:title>Resolving GMCs using CO Absorption Toward Compact QSOs Directly Behind the MW Disk</caom2:title>
     <caom2:keywords>
-      <caom2:keyword>Medium</caom2:keyword>
       <caom2:keyword>Inter-Stellar</caom2:keyword>
       <caom2:keyword>(ISM)/Molecular</caom2:keyword>
+      <caom2:keyword>Medium</caom2:keyword>
       <caom2:keyword>clouds</caom2:keyword>
     </caom2:keywords>
   </caom2:proposal>
@@ -56,8 +56,9 @@
             <caom2:cval1>291.2127331541666</caom2:cval1>
             <caom2:cval2>-29.24170028611111</caom2:cval2>
           </caom2:center>
-          <caom2:radius>26.690969492952938</caom2:radius>
+          <caom2:radius>0.007414158192486927</caom2:radius>
         </caom2:bounds>
+        <caom2:resolution>0.3117685755603343</caom2:resolution>
         <caom2:timeDependent>false</caom2:timeDependent>
       </caom2:position>
       <caom2:energy>
@@ -118,8 +119,9 @@
             <caom2:cval1>291.2127331541666</caom2:cval1>
             <caom2:cval2>-29.24170028611111</caom2:cval2>
           </caom2:center>
-          <caom2:radius>26.690969492952938</caom2:radius>
+          <caom2:radius>0.007414158192486927</caom2:radius>
         </caom2:bounds>
+        <caom2:resolution>0.3117685755603343</caom2:resolution>
         <caom2:timeDependent>false</caom2:timeDependent>
       </caom2:position>
       <caom2:energy>
@@ -180,8 +182,9 @@
             <caom2:cval1>291.2127331541666</caom2:cval1>
             <caom2:cval2>-29.24170028611111</caom2:cval2>
           </caom2:center>
-          <caom2:radius>26.690969492952938</caom2:radius>
+          <caom2:radius>0.007414158192486927</caom2:radius>
         </caom2:bounds>
+        <caom2:resolution>0.3117685755603343</caom2:resolution>
         <caom2:timeDependent>false</caom2:timeDependent>
       </caom2:position>
       <caom2:energy>
