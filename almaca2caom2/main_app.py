@@ -82,13 +82,12 @@ from caom2 import ReleaseType, ProductType, ObservationIntentType
 from caom2 import Time, ObservationURI, Environment, PlaneURI
 
 from caom2pipe import astro_composable as ac
-from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
 
 ARCHIVE = 'ALMACA'
 
 
-class AlmacaName(ec.StorageName):
+class AlmacaName(mc.StorageName):
     """
     Naming rules:
     - product id should be the file name without the “.ms.split.cal” suffix,
@@ -118,7 +117,7 @@ class AlmacaName(ec.StorageName):
 
     @property
     def input_uri(self):
-        return PlaneURI(ec.CaomName.make_plane_uri(
+        return PlaneURI(mc.CaomName.make_plane_uri(
             ARCHIVE, self._obs_id, self._product_id))
 
     @property
@@ -196,7 +195,7 @@ def build_position(db_content, field_index, md_name):
 def build_energy(override):
 
     spectral_windows = override.get('spectral_windows')
-    sample_size = override.get('energy_sample_size')
+    sample_size = mc.to_float(override.get('energy_sample_size'))
 
     # HK 19-08-19
     # I'm still not quite sure that I follow this one.  I understand your
@@ -271,9 +270,15 @@ def build_energy(override):
     # differential wavelength measurement, both conversions would follow the
     # same formula as I've written.
     #
-    energy.sample_size = _from_hz_to_m(mc.to_float(sample_size))
-    energy.resolving_power = _from_hz_to_m(
-        mc.to_float(override.get('energy_resolution')))
+    mean_frequency = (_from_m_to_hz(min_bound) + _from_m_to_hz(max_bound)) / 2
+    energy.sample_size = _delta_hz_to_m(sample_size, mean_frequency)
+    energy_resolution = mc.to_float(override.get('energy_resolution'))
+    energy.resolution = _delta_hz_to_m(energy_resolution, mean_frequency)
+
+    # HK 03-12-19
+    # resolving power is unit-less
+    # ResolvingPower = mean[frequency_Hz] / chanres_Hz
+    energy.resolving_power = mean_frequency / energy_resolution
 
     # HK 3-10-19
     # energy: bandpassName: could this also be Band3?  (I know it is already
@@ -282,7 +287,23 @@ def build_energy(override):
     return energy
 
 
-def _from_hz_to_m(value):
+def _delta_hz_to_m(from_value, mean_frequency):
+    # HK - 09-12-19
+    # Use the following:
+    #
+    # (change_in_frequency)/(frequency) = (change_in_wavelength)/(wavelength)
+    #
+    # You can convert that to the following:
+    #
+    # (change_in_wavelength) =
+    #   (change_in_frequency)*(speed_of_light)/(frequency^2)
+    #
+    # change in frequency => 'energy_sample_size' => msmd.chanwidth
+    # frequency => mean of 'spectral_windows' => msmd.chanfreqs
+    return ((from_value * constants.c) / (mean_frequency ** 2)).value
+
+
+def _from_hz_to_m(val):
     # JJK 15-10-19
     # I'll just interject into here that what the pyCAOM code should do (and
     # I really mean should) is accept values that have units when
@@ -301,7 +322,11 @@ def _from_hz_to_m(value):
     # then Energy can assume they are in m or through an error, but for
     # backwards friendly it should accept this as unit.m by default and cast
     # the value to a unit.m Quantity
-    return (value * units.Hz).to(units.m, equivalencies=units.spectral()).value
+    return (val * units.Hz).to(units.m, equivalencies=units.spectral()).value
+
+
+def _from_m_to_hz(val):
+    return (val * units.m).to(units.Hz, equivalencies=units.spectral()).value
 
 
 def _add_subinterval(si_list, subinterval):
@@ -474,7 +499,7 @@ def _build_obs(override, db_content, fqn, index, almaca_name):
                                        environment=environment)
     observation.members.add(
         ObservationURI(
-            ec.CaomName.make_obs_uri_from_obs_id('ALMA', 'A001_X88b_X23')))
+            mc.CaomName.make_obs_uri_from_obs_id('ALMA', 'A001_X88b_X23')))
     return observation
 
 

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:CompositeObservation" caom2:id="19df53bf-0a4e-4e47-8d3d-24156e0b29da">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:CompositeObservation" caom2:id="aabf067b-afda-41a2-a00d-077bf7f7bbcc">
   <caom2:collection>ALMACA</caom2:collection>
   <caom2:observationID>A002_Xb8e115_X20e.CAL.J1924-2914</caom2:observationID>
   <caom2:metaRelease>2016-09-30T22:21:09.000</caom2:metaRelease>
@@ -14,8 +14,8 @@
     <caom2:project>uid://A001/X3ab/X10</caom2:project>
     <caom2:title>Resolving GMCs using CO Absorption Toward Compact QSOs Directly Behind the MW Disk</caom2:title>
     <caom2:keywords>
-      <caom2:keyword>Inter-Stellar</caom2:keyword>
       <caom2:keyword>(ISM)/Molecular</caom2:keyword>
+      <caom2:keyword>Inter-Stellar</caom2:keyword>
       <caom2:keyword>Medium</caom2:keyword>
       <caom2:keyword>clouds</caom2:keyword>
     </caom2:keywords>
@@ -40,7 +40,7 @@
     <caom2:wavelengthTau>0.00035</caom2:wavelengthTau>
   </caom2:environment>
   <caom2:planes>
-    <caom2:plane caom2:id="ebd5e0c6-b899-4ddd-8603-6c6da2a6f2ed">
+    <caom2:plane caom2:id="7b8ba5d2-a6a6-490a-8321-ed5884b7b518">
       <caom2:productID>cont</caom2:productID>
       <caom2:metaRelease>2016-09-30T22:21:09.000</caom2:metaRelease>
       <caom2:dataRelease>2017-12-21T00:00:00.000</caom2:dataRelease>
@@ -73,8 +73,8 @@
           </caom2:samples>
         </caom2:bounds>
         <caom2:dimension>1</caom2:dimension>
-        <caom2:resolvingPower>9.593358656</caom2:resolvingPower>
-        <caom2:sampleSize>19.186717312</caom2:sampleSize>
+        <caom2:resolvingPower>7415.920238910344</caom2:resolvingPower>
+        <caom2:sampleSize>8.721889602302796e-08</caom2:sampleSize>
         <caom2:bandpassName>Band 6</caom2:bandpassName>
         <caom2:emBand>Millimeter</caom2:emBand>
       </caom2:energy>
@@ -94,7 +94,7 @@
         <caom2:exposure>218.41254878</caom2:exposure>
       </caom2:time>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="8d1fdd59-911d-456a-bb83-c9ccbcb079c1">
+        <caom2:artifact caom2:id="0ea38794-7ffb-484a-9ee4-127c6e9bd04a">
           <caom2:uri>ad:ALMACA/uid___A002_Xb8e115_X20e.CAL.J1924-2914.cont.ms.split.cal.tar.gz</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -103,7 +103,7 @@
         </caom2:artifact>
       </caom2:artifacts>
     </caom2:plane>
-    <caom2:plane caom2:id="150ed8d6-624d-46ba-93bd-47a495ed50e5">
+    <caom2:plane caom2:id="a6fc9664-e5a8-429e-8504-99630d8bb0f8">
       <caom2:productID>line_spw2</caom2:productID>
       <caom2:metaRelease>2016-09-30T22:21:09.000</caom2:metaRelease>
       <caom2:dataRelease>2017-12-21T00:00:00.000</caom2:dataRelease>
@@ -148,8 +148,8 @@
           </caom2:samples>
         </caom2:bounds>
         <caom2:dimension>1</caom2:dimension>
-        <caom2:resolvingPower>9.593358656</caom2:resolvingPower>
-        <caom2:sampleSize>19.186717312</caom2:sampleSize>
+        <caom2:resolvingPower>7235.112379034223</caom2:resolvingPower>
+        <caom2:sampleSize>9.16326240029803e-08</caom2:sampleSize>
         <caom2:bandpassName>Band 6</caom2:bandpassName>
         <caom2:emBand>Millimeter</caom2:emBand>
       </caom2:energy>
@@ -169,7 +169,7 @@
         <caom2:exposure>173.743601978</caom2:exposure>
       </caom2:time>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="374bdcac-cd48-4874-a930-6c748c78b859">
+        <caom2:artifact caom2:id="565e8921-6ded-4ce9-a9ab-43eb7d1215cc">
           <caom2:uri>ad:ALMACA/uid___A002_Xb8e115_X20e.CAL.J1924-2914.line_spw2.ms.split.cal.tar.gz</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -178,7 +178,7 @@
         </caom2:artifact>
       </caom2:artifacts>
     </caom2:plane>
-    <caom2:plane caom2:id="01171688-c22f-4892-ba69-4ab373625374">
+    <caom2:plane caom2:id="561b5e66-e55a-4d28-9e9f-5958b75cd610">
       <caom2:productID>line_spw3</caom2:productID>
       <caom2:metaRelease>2016-09-30T22:21:09.000</caom2:metaRelease>
       <caom2:dataRelease>2017-12-21T00:00:00.000</caom2:dataRelease>
@@ -223,8 +223,8 @@
           </caom2:samples>
         </caom2:bounds>
         <caom2:dimension>1</caom2:dimension>
-        <caom2:resolvingPower>9.593358656</caom2:resolvingPower>
-        <caom2:sampleSize>19.186717312</caom2:sampleSize>
+        <caom2:resolvingPower>7235.112379034223</caom2:resolvingPower>
+        <caom2:sampleSize>9.16326240029803e-08</caom2:sampleSize>
         <caom2:bandpassName>Band 6</caom2:bandpassName>
         <caom2:emBand>Millimeter</caom2:emBand>
       </caom2:energy>
@@ -244,7 +244,7 @@
         <caom2:exposure>173.743601978</caom2:exposure>
       </caom2:time>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="75aa09ae-4d66-40cd-b020-d63dab8f1cc7">
+        <caom2:artifact caom2:id="501e1f48-1afe-4946-be87-2c2d752fa4ed">
           <caom2:uri>ad:ALMACA/uid___A002_Xb8e115_X20e.CAL.J1924-2914.line_spw3.ms.split.cal.tar.gz</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -253,7 +253,7 @@
         </caom2:artifact>
       </caom2:artifacts>
     </caom2:plane>
-    <caom2:plane caom2:id="8bc3b2a2-bc89-4ade-91bd-244f6a04b7f4">
+    <caom2:plane caom2:id="eb2c6f24-5f66-4b8a-b307-aedb50540d64">
       <caom2:productID>line_spw1</caom2:productID>
       <caom2:metaRelease>2016-09-30T22:21:09.000</caom2:metaRelease>
       <caom2:dataRelease>2017-12-21T00:00:00.000</caom2:dataRelease>
@@ -298,8 +298,8 @@
           </caom2:samples>
         </caom2:bounds>
         <caom2:dimension>1</caom2:dimension>
-        <caom2:resolvingPower>9.593358656</caom2:resolvingPower>
-        <caom2:sampleSize>19.186717312</caom2:sampleSize>
+        <caom2:resolvingPower>7235.112379034223</caom2:resolvingPower>
+        <caom2:sampleSize>9.16326240029803e-08</caom2:sampleSize>
         <caom2:bandpassName>Band 6</caom2:bandpassName>
         <caom2:emBand>Millimeter</caom2:emBand>
       </caom2:energy>
@@ -319,7 +319,7 @@
         <caom2:exposure>173.743601978</caom2:exposure>
       </caom2:time>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="b168b355-67f0-4e8b-a3cb-96c743ef0923">
+        <caom2:artifact caom2:id="2b707c90-de55-41a9-be11-08626f400067">
           <caom2:uri>ad:ALMACA/uid___A002_Xb8e115_X20e.CAL.J1924-2914.line_spw1.ms.split.cal.tar.gz</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>

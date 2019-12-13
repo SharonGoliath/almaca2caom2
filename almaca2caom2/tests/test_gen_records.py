@@ -162,7 +162,7 @@ def test_gen():
                     actual.observation_id, '\n'.join([r for r in result]))
                 logging.error(msg)
                 errors_found = True
-                assert False, obs_fqn
+                # assert False, obs_fqn
         else:
             raise AssertionError(
                 'Unexpected Observation {}'.format(actual.observation_id))
@@ -250,6 +250,21 @@ def get_info(filename, provenance):
     # binning/smoothing, which would be captured in chanres but not
     # chanwidths.  For the observation I've been looking at, the two values
     # differ by a factor of 2, i.e., binning every 2 channels is expected)
+
+    # HK 03-12-19
+    # For the checks/discussion below, I am assuming the caom2 Energy listings
+    # are in metres (except ResolvingPower which is unitless). As we discussed
+    # earlier, SampleSize = msmd.chanwidth, Resolution=msmd.chanres (barring
+    # unit conversions)
+    #
+    # I'm assuming that ResolvingPower = mean[frequency_Hz] / chanres_Hz
+    #
+    # Conversion of other parameters: since ResolvingPower should be the same
+    # for either frequency or wavelength units, we get:
+    #
+    # chanwidth_metres = (chanwidth_Hz/ mean[frequency_Hz]) * mean[wavelength_m]
+    #
+    # and similarly for chanres_metres
 
     # assuming 0th index, assuming the widths are the same for all
     chan_widths = msmd.chanwidths(0, 'Hz')
