@@ -1,3 +1,4 @@
+import glob
 import os
 import math
 
@@ -84,6 +85,84 @@ def try_vishead(fqn):
     listobs(vis=fqn, listfile=list_fqn)
 
 
+# cardinality == 1 obs per MOUS ID
+# def test_gen():
+#     # from astroquery.alma import Alma
+#     # from astropy.table import Table
+#     # db_table = Alma().query(payload={'project_code': '2016.1.00010.S'})
+#     # # db_table.write('{}/alma_query.xml'.format(TEST_DATA_DIR),
+#     # # format='votable')
+#     # db_table.write('{}/alma_query2.xml'.format(TEST_DATA_DIR), format='html')
+#
+#     # FYI - this has values
+#     # import logging
+#     # logging.error(db_table['Release date'])
+#     # assert False
+#
+#     import logging
+#     from caom2.diff import get_differences
+#     from caom2pipe import manage_composable as mc
+#     from almaca2caom2 import main_app as ma
+#
+#     from astropy.table import Table
+#     db_fqn = '{}/alma_query.html'.format(ALMA_QUERY_DIR)
+#     db_content = Table.read(db_fqn, format='html')
+#
+#     obs = None
+#     entries = glob.glob('/data/calibrated/*ms.split.cal')
+#     for entry in entries:
+#         fqn = f'{entry}/md.pk'
+#         if not os.path.exists(fqn):
+#             logging.error('missing md for {}'.format(fqn))
+#             continue
+#         logging.error('reading from {}'.format(fqn))
+#         temp = mc.read_from_file(fqn)
+#         assert temp is not None, 'expected result'
+#         result = {'spectral_windows': []}
+#         for line in temp:
+#             temp2 = line.split(',', 1)
+#             if temp2[0].strip() == 'spectral_windows':
+#                 x = temp2[1].strip().split(',')
+#                 count = 0
+#                 while count < len(x):
+#                     y = (mc.to_float(x[count].replace('(', '').replace('[', '').replace(']', '').replace(')', '')),
+#                          mc.to_float(x[count+1].replace('(', '').replace('[', '').replace(']', '').replace(')', '')))
+#                     count += 2
+#                     result[temp2[0]].append(y)
+#             elif type(temp2[1]) is str:
+#                 result[temp2[0]] = temp2[1].strip()
+#             else:
+#                 result[temp2[0]] = temp2[1]
+#         try:
+#             obs = ma.build_observation(result, db_content, obs, fqn)
+#         except Exception as e:
+#             import traceback
+#             logging.error(traceback.format_exc())
+#             logging.error(fqn)
+#             assert False
+#
+#     obs_fqn = f'{ALMA_QUERY_DIR}/{obs.observation_id}.actual.xml'
+#     logging.error(f'obs type {type(obs)}')
+#     mc.write_obs_to_file(obs, obs_fqn)
+#     expected_fqn = '{}/expected_{}.xml'.format(ALMA_QUERY_DIR,
+#                                                obs.observation_id)
+#     if os.path.exists(expected_fqn):
+#         expected = mc.read_obs_from_file(expected_fqn)
+#         result = get_differences(expected, obs, 'Observation')
+#         if result:
+#             msg = 'Differences found {}\n{}'.format(
+#                 obs.observation_id, '\n'.join([r for r in result]))
+#             logging.error(msg)
+#             errors_found = True
+#             # assert False, obs_fqn
+#     else:
+#         raise AssertionError(
+#             'Unexpected Observation {}'.format(obs.observation_id))
+#
+#     # assert False
+
+
+# For a different cardinality handling - SGo - 02-03-20
 def test_gen():
     # from astroquery.alma import Alma
     # from astropy.table import Table
@@ -108,64 +187,70 @@ def test_gen():
 
     obs_lookup = {}
     obs = None
-    for root, dirs, files in os.walk(TEST_DATA_DIR):
-        for dir_name in dirs:
-            if dir_name.endswith('ms.split.cal'):
-                fqn = '{}/{}/md.pk'.format(root, dir_name)
-                if not os.path.exists(fqn):
-                    logging.error('missing md for {}'.format(fqn))
-                    continue
-                almaca_name = ma.AlmacaName(dir_name)
-                if obs is not None and almaca_name.obs_id != obs.observation_id:
-                    # logging.error('storing {}'.format(obs.observation_id))
-                    obs_lookup[obs.observation_id] = obs
-                    obs = obs_lookup.get(almaca_name.obs_id)
+    entries = glob.glob('/data/calibrated/*ms.split.cal')
+    for entry in entries:
+        fqn = f'{entry}/md.pk'
+        if not os.path.exists(fqn):
+            logging.error('missing md for {}'.format(fqn))
+            continue
 
-                # logging.error('reading from {}'.format(fqn))
-                temp = mc.read_from_file(fqn)
-                assert temp is not None, 'expected result'
-                result = {'spectral_windows': []}
-                for line in temp:
-                    temp2 = line.split(',', 1)
-                    if temp2[0].strip() == 'spectral_windows':
-                        x = temp2[1].strip().split(',')
-                        count = 0
-                        while count < len(x):
-                            y = (mc.to_float(x[count].replace('(', '').replace('[', '').replace(']', '').replace(')', '')),
-                                 mc.to_float(x[count+1].replace('(', '').replace('[', '').replace(']', '').replace(')', '')))
-                            count += 2
-                            result[temp2[0]].append(y)
-                    elif type(temp2[1]) is str:
-                        result[temp2[0]] = temp2[1].strip()
-                    else:
-                        result[temp2[0]] = temp2[1]
-                try:
-                    obs = ma.build_observation(result, db_content, obs, fqn)
-                except Exception as e:
-                    import traceback
-                    logging.error(traceback.format_exc())
-                    assert False
+        logging.error(entry)
+        try:
+            almaca_name = ma.AlmacaName(os.path.basename(entry))
+        except mc.CadcException:
+            # skip the input MS's
+            continue
+
+        if obs is not None and almaca_name.obs_id != obs.observation_id:
+            # logging.error('storing {}'.format(obs.observation_id))
+            obs_lookup[obs.observation_id] = obs
+            obs = obs_lookup.get(almaca_name.obs_id)
+
+        # temp = mc.read_from_file(fqn)
+        # assert temp is not None, 'expected result'
+        # result = {'spectral_windows': []}
+        # for line in temp:
+        #     temp2 = line.split(',', 1)
+        #     if temp2[0].strip() == 'spectral_windows':
+        #         x = temp2[1].strip().split(',')
+        #         count = 0
+        #         while count < len(x):
+        #             y = (mc.to_float(x[count].replace('(', '').replace('[', '').replace(']', '').replace(')', '')),
+        #                  mc.to_float(x[count+1].replace('(', '').replace('[', '').replace(']', '').replace(')', '')))
+        #             count += 2
+        #             result[temp2[0]].append(y)
+        #     elif type(temp2[1]) is str:
+        #         result[temp2[0]] = temp2[1].strip()
+        #     else:
+        #         result[temp2[0]] = temp2[1]
+        try:
+            obs = ma.build_observation(db_content, obs, fqn)
+        except Exception as e:
+            import traceback
+            logging.error(traceback.format_exc())
+            logging.error(fqn)
+            assert False
 
     errors_found = False
     for obs in obs_lookup:
-        obs_fqn = '{}/actual_{}.xml'.format(ALMA_QUERY_DIR,
-                                            obs)
+        obs_fqn = f'{ALMA_QUERY_DIR}/{obs}.actual.xml'
+        logging.error(f'checking fqn {obs_fqn}')
         actual = obs_lookup.get(obs)
         mc.write_obs_to_file(actual, obs_fqn)
-        expected_fqn = '{}/expected_{}.xml'.format(ALMA_QUERY_DIR,
-                                                   actual.observation_id)
+        expected_fqn = f'{ALMA_QUERY_DIR}/{actual.observation_id}.expected.xml'
         if os.path.exists(expected_fqn):
             expected = mc.read_obs_from_file(expected_fqn)
             result = get_differences(expected, actual, 'Observation')
             if result:
-                msg = 'Differences found {}\n{}'.format(
-                    actual.observation_id, '\n'.join([r for r in result]))
+                msg_str = '\n'.join([r for r in result])
+                msg = f'Differences found {actual.observation_id}\n{msg_str}'
                 logging.error(msg)
                 errors_found = True
                 # assert False, obs_fqn
         else:
-            raise AssertionError(
-                'Unexpected Observation {}'.format(actual.observation_id))
+            msg = f'Could not find {expected_fqn}'
+            logging.error(msg)
+            raise AssertionError(msg)
 
     if errors_found:
         raise AssertionError('Final failure.')

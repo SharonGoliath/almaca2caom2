@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:CompositeObservation" caom2:id="07d54398-3dd0-4397-b057-120dee65edd3">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:DerivedObservation" caom2:id="07d54398-3dd0-4397-b057-120dee65edd3">
   <caom2:collection>ALMACA</caom2:collection>
   <caom2:observationID>A002_Xb945f7_Xc07.CAL.J1924-2914</caom2:observationID>
   <caom2:metaRelease>2016-10-11T22:15:13.000</caom2:metaRelease>
@@ -49,6 +49,11 @@
       <caom2:provenance>
         <caom2:name>CASA</caom2:name>
         <caom2:reference>https://casa.nrao.edu/</caom2:reference>
+        <caom2:keywords>
+          <caom2:keyword>GroupOUSID: uid://A001/X88b/X22</caom2:keyword>
+          <caom2:keyword>ScienceGoalOUSID: uid://A001/X88b/X21</caom2:keyword>
+          <caom2:keyword>MemberOUSID: uid://A001/X88b/X23</caom2:keyword>
+        </caom2:keywords>
       </caom2:provenance>
       <caom2:position>
         <caom2:bounds xsi:type="caom2:Circle">
@@ -112,6 +117,11 @@
       <caom2:provenance>
         <caom2:name>CASA</caom2:name>
         <caom2:reference>https://casa.nrao.edu/</caom2:reference>
+        <caom2:keywords>
+          <caom2:keyword>GroupOUSID: uid://A001/X88b/X22</caom2:keyword>
+          <caom2:keyword>ScienceGoalOUSID: uid://A001/X88b/X21</caom2:keyword>
+          <caom2:keyword>MemberOUSID: uid://A001/X88b/X23</caom2:keyword>
+        </caom2:keywords>
       </caom2:provenance>
       <caom2:position>
         <caom2:bounds xsi:type="caom2:Circle">
@@ -175,6 +185,11 @@
       <caom2:provenance>
         <caom2:name>CASA</caom2:name>
         <caom2:reference>https://casa.nrao.edu/</caom2:reference>
+        <caom2:keywords>
+          <caom2:keyword>GroupOUSID: uid://A001/X88b/X22</caom2:keyword>
+          <caom2:keyword>ScienceGoalOUSID: uid://A001/X88b/X21</caom2:keyword>
+          <caom2:keyword>MemberOUSID: uid://A001/X88b/X23</caom2:keyword>
+        </caom2:keywords>
       </caom2:provenance>
       <caom2:position>
         <caom2:bounds xsi:type="caom2:Circle">

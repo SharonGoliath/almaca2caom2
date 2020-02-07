@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:CompositeObservation" caom2:id="9e6a3478-2b47-4c8e-8346-633a7c12ee2e">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:DerivedObservation" caom2:id="f040e32d-87b7-4ff9-ba5f-d90d5e41ad71">
   <caom2:collection>ALMACA</caom2:collection>
-  <caom2:observationID>A002_Xb945f7_X1551.SCI.J1851+0035</caom2:observationID>
-  <caom2:metaRelease>2016-10-12T00:55:56.000</caom2:metaRelease>
+  <caom2:observationID>A002_Xb945f7_Xc07.SCI.J1851+0035</caom2:observationID>
+  <caom2:metaRelease>2016-10-11T22:15:13.000</caom2:metaRelease>
   <caom2:algorithm>
     <caom2:name>band splitting</caom2:name>
   </caom2:algorithm>
@@ -36,21 +36,24 @@
     <caom2:name>Band 3</caom2:name>
   </caom2:instrument>
   <caom2:environment>
-    <caom2:tau>1.2308822459893047</caom2:tau>
+    <caom2:tau>1.6902645989304812</caom2:tau>
     <caom2:wavelengthTau>0.00035</caom2:wavelengthTau>
   </caom2:environment>
   <caom2:planes>
-    <caom2:plane caom2:id="977acb0b-0ea0-4055-b888-895baea956a8">
+    <caom2:plane caom2:id="16f9e15e-ecac-4e5e-ba7e-dbcbe90027f5">
       <caom2:productID>line_spw3</caom2:productID>
-      <caom2:metaRelease>2016-10-12T00:55:56.000</caom2:metaRelease>
-      <caom2:dataRelease>2018-04-11T00:00:00.000</caom2:dataRelease>
+      <caom2:metaRelease>2016-10-11T22:15:13.000</caom2:metaRelease>
+      <caom2:dataRelease>2018-01-20T00:00:00.000</caom2:dataRelease>
       <caom2:dataProductType>visibility</caom2:dataProductType>
       <caom2:calibrationLevel>2</caom2:calibrationLevel>
       <caom2:provenance>
         <caom2:name>CASA</caom2:name>
-        <caom2:version>CASA Version 4.7.0-REL (r38335)</caom2:version>
         <caom2:reference>https://casa.nrao.edu/</caom2:reference>
-        <caom2:lastExecuted>2019-06-12T17:34:17.000</caom2:lastExecuted>
+        <caom2:keywords>
+          <caom2:keyword>GroupOUSID: uid://A001/X88b/X22</caom2:keyword>
+          <caom2:keyword>ScienceGoalOUSID: uid://A001/X88b/X21</caom2:keyword>
+          <caom2:keyword>MemberOUSID: uid://A001/X88b/X23</caom2:keyword>
+        </caom2:keywords>
       </caom2:provenance>
       <caom2:position>
         <caom2:bounds xsi:type="caom2:Circle">
@@ -58,46 +61,46 @@
             <caom2:cval1>282.9446795833333</caom2:cval1>
             <caom2:cval2>0.5923230555555556</caom2:cval2>
           </caom2:center>
-          <caom2:radius>0.007089295896790105</caom2:radius>
+          <caom2:radius>0.007414158192486927</caom2:radius>
         </caom2:bounds>
-        <caom2:resolution>0.4020517425038728</caom2:resolution>
+        <caom2:resolution>0.3117685755603343</caom2:resolution>
         <caom2:timeDependent>false</caom2:timeDependent>
       </caom2:position>
       <caom2:energy>
         <caom2:bounds>
-          <caom2:lower>0.0025999953380942274</caom2:lower>
-          <caom2:upper>0.002602639780464858</caom2:upper>
+          <caom2:lower>0.0027306499911238973</caom2:lower>
+          <caom2:upper>0.0027321077353712107</caom2:upper>
           <caom2:samples>
             <caom2:sample>
-              <caom2:lower>0.0025999953380942274</caom2:lower>
-              <caom2:upper>0.002602639780464858</caom2:upper>
+              <caom2:lower>0.0027306499911238973</caom2:lower>
+              <caom2:upper>0.0027321077353712107</caom2:upper>
             </caom2:sample>
           </caom2:samples>
         </caom2:bounds>
         <caom2:dimension>1</caom2:dimension>
-        <caom2:resolvingPower>1888197.341901674</caom2:resolvingPower>
-        <caom2:sampleSize>6.888360738261427e-10</caom2:sampleSize>
+        <caom2:resolvingPower>3596571.715283379</caom2:resolvingPower>
+        <caom2:sampleSize>3.7971975605828257e-10</caom2:sampleSize>
         <caom2:bandpassName>Band 3</caom2:bandpassName>
         <caom2:emBand>Millimeter</caom2:emBand>
       </caom2:energy>
       <caom2:time>
         <caom2:bounds>
-          <caom2:lower>57673.0353575</caom2:lower>
-          <caom2:upper>57673.0671778</caom2:upper>
+          <caom2:lower>57672.9235494</caom2:lower>
+          <caom2:upper>57672.9541033</caom2:upper>
           <caom2:samples>
             <caom2:sample>
-              <caom2:lower>57673.0353575</caom2:lower>
-              <caom2:upper>57673.0671778</caom2:upper>
+              <caom2:lower>57672.9235494</caom2:lower>
+              <caom2:upper>57672.9541033</caom2:upper>
             </caom2:sample>
           </caom2:samples>
         </caom2:bounds>
         <caom2:dimension>1</caom2:dimension>
-        <caom2:sampleSize>275.0</caom2:sampleSize>
-        <caom2:exposure>1611.96163904</caom2:exposure>
+        <caom2:sampleSize>225.0</caom2:sampleSize>
+        <caom2:exposure>1073.61588293</caom2:exposure>
       </caom2:time>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="c87fa5e1-826e-4061-a5a5-3691dd4c7984">
-          <caom2:uri>ad:ALMACA/uid___A002_Xb945f7_X1551.SCI.J1851+0035.line_spw3.ms.split.cal.tar.gz</caom2:uri>
+        <caom2:artifact caom2:id="bed72c79-94df-4034-9633-b7b7edac371e">
+          <caom2:uri>ad:ALMACA/uid___A002_Xb945f7_Xc07.SCI.J1851+0035.line_spw3.ms.split.cal.tar.gz</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/tar+gzip</caom2:contentType>
@@ -105,82 +108,15 @@
         </caom2:artifact>
       </caom2:artifacts>
     </caom2:plane>
-    <caom2:plane caom2:id="c369b218-8d8b-4c09-8408-4b2672c50f25">
-      <caom2:productID>cont</caom2:productID>
-      <caom2:metaRelease>2016-10-12T00:55:56.000</caom2:metaRelease>
-      <caom2:dataRelease>2018-04-11T00:00:00.000</caom2:dataRelease>
-      <caom2:dataProductType>visibility</caom2:dataProductType>
-      <caom2:calibrationLevel>2</caom2:calibrationLevel>
-      <caom2:provenance>
-        <caom2:name>CASA</caom2:name>
-        <caom2:version>CASA Version 4.7.0-REL (r38335)</caom2:version>
-        <caom2:reference>https://casa.nrao.edu/</caom2:reference>
-        <caom2:lastExecuted>2019-06-12T17:34:17.000</caom2:lastExecuted>
-      </caom2:provenance>
-      <caom2:position>
-        <caom2:bounds xsi:type="caom2:Circle">
-          <caom2:center>
-            <caom2:cval1>282.9446795833333</caom2:cval1>
-            <caom2:cval2>0.5923230555555556</caom2:cval2>
-          </caom2:center>
-          <caom2:radius>0.007089295896790105</caom2:radius>
-        </caom2:bounds>
-        <caom2:resolution>0.4020517425038728</caom2:resolution>
-        <caom2:timeDependent>false</caom2:timeDependent>
-      </caom2:position>
-      <caom2:energy>
-        <caom2:bounds>
-          <caom2:lower>0.002585143069553096</caom2:lower>
-          <caom2:upper>0.0026723410725081236</caom2:upper>
-          <caom2:samples>
-            <caom2:sample>
-              <caom2:lower>0.002585143069553096</caom2:lower>
-              <caom2:upper>0.0026723410725081236</caom2:upper>
-            </caom2:sample>
-          </caom2:samples>
-        </caom2:bounds>
-        <caom2:dimension>1</caom2:dimension>
-        <caom2:resolvingPower>3650.414552850927</caom2:resolvingPower>
-        <caom2:sampleSize>3.5996171417592877e-07</caom2:sampleSize>
-        <caom2:bandpassName>Band 3</caom2:bandpassName>
-        <caom2:emBand>Millimeter</caom2:emBand>
-      </caom2:energy>
-      <caom2:time>
-        <caom2:bounds>
-          <caom2:lower>57673.0353575</caom2:lower>
-          <caom2:upper>57673.0671778</caom2:upper>
-          <caom2:samples>
-            <caom2:sample>
-              <caom2:lower>57673.0353575</caom2:lower>
-              <caom2:upper>57673.0671778</caom2:upper>
-            </caom2:sample>
-          </caom2:samples>
-        </caom2:bounds>
-        <caom2:dimension>1</caom2:dimension>
-        <caom2:sampleSize>338.0</caom2:sampleSize>
-        <caom2:exposure>1410.46643415</caom2:exposure>
-      </caom2:time>
-      <caom2:artifacts>
-        <caom2:artifact caom2:id="6498550c-9598-4c55-8545-5e8ad3dc53b5">
-          <caom2:uri>ad:ALMACA/uid___A002_Xb945f7_X1551.SCI.J1851+0035.cont.ms.split.cal.tar.gz</caom2:uri>
-          <caom2:productType>science</caom2:productType>
-          <caom2:releaseType>data</caom2:releaseType>
-          <caom2:contentType>application/tar+gzip</caom2:contentType>
-          <caom2:parts/>
-        </caom2:artifact>
-      </caom2:artifacts>
-    </caom2:plane>
-    <caom2:plane caom2:id="93fbc799-ccf2-404e-935f-76384a3b2c3c">
+    <caom2:plane caom2:id="3dff86a3-ba2f-4edc-91c6-d0126f6bc9a3">
       <caom2:productID>line_spw2</caom2:productID>
-      <caom2:metaRelease>2016-10-12T00:55:56.000</caom2:metaRelease>
-      <caom2:dataRelease>2018-04-11T00:00:00.000</caom2:dataRelease>
+      <caom2:metaRelease>2016-10-11T22:15:13.000</caom2:metaRelease>
+      <caom2:dataRelease>2018-01-20T00:00:00.000</caom2:dataRelease>
       <caom2:dataProductType>visibility</caom2:dataProductType>
       <caom2:calibrationLevel>2</caom2:calibrationLevel>
       <caom2:provenance>
         <caom2:name>CASA</caom2:name>
-        <caom2:version>CASA Version 4.7.0-REL (r38335)</caom2:version>
         <caom2:reference>https://casa.nrao.edu/</caom2:reference>
-        <caom2:lastExecuted>2019-06-12T17:34:17.000</caom2:lastExecuted>
       </caom2:provenance>
       <caom2:position>
         <caom2:bounds xsi:type="caom2:Circle">
@@ -188,46 +124,109 @@
             <caom2:cval1>282.9446795833333</caom2:cval1>
             <caom2:cval2>0.5923230555555556</caom2:cval2>
           </caom2:center>
-          <caom2:radius>0.007089295896790105</caom2:radius>
+          <caom2:radius>0.007414158192486927</caom2:radius>
         </caom2:bounds>
-        <caom2:resolution>0.4020517425038728</caom2:resolution>
+        <caom2:resolution>0.3117685755603343</caom2:resolution>
         <caom2:timeDependent>false</caom2:timeDependent>
       </caom2:position>
       <caom2:energy>
         <caom2:bounds>
-          <caom2:lower>0.0026006559447620593</caom2:lower>
-          <caom2:upper>0.00260197816569117</caom2:upper>
+          <caom2:lower>0.002720266372640563</caom2:lower>
+          <caom2:upper>0.0027217130485412697</caom2:upper>
           <caom2:samples>
             <caom2:sample>
-              <caom2:lower>0.0026006559447620593</caom2:lower>
-              <caom2:upper>0.00260197816569117</caom2:upper>
+              <caom2:lower>0.002720266372640563</caom2:lower>
+              <caom2:upper>0.0027217130485412697</caom2:upper>
             </caom2:sample>
           </caom2:samples>
         </caom2:bounds>
         <caom2:dimension>1</caom2:dimension>
-        <caom2:resolvingPower>3776394.683803348</caom2:resolvingPower>
-        <caom2:sampleSize>3.4441803691307134e-10</caom2:sampleSize>
+        <caom2:resolvingPower>3610303.971283379</caom2:resolvingPower>
+        <caom2:sampleSize>3.7683662372259384e-10</caom2:sampleSize>
         <caom2:bandpassName>Band 3</caom2:bandpassName>
         <caom2:emBand>Millimeter</caom2:emBand>
       </caom2:energy>
       <caom2:time>
         <caom2:bounds>
-          <caom2:lower>57673.0353575</caom2:lower>
-          <caom2:upper>57673.0671778</caom2:upper>
+          <caom2:lower>57672.9235494</caom2:lower>
+          <caom2:upper>57672.9541033</caom2:upper>
           <caom2:samples>
             <caom2:sample>
-              <caom2:lower>57673.0353575</caom2:lower>
-              <caom2:upper>57673.0671778</caom2:upper>
+              <caom2:lower>57672.9235494</caom2:lower>
+              <caom2:upper>57672.9541033</caom2:upper>
             </caom2:sample>
           </caom2:samples>
         </caom2:bounds>
         <caom2:dimension>1</caom2:dimension>
-        <caom2:sampleSize>275.0</caom2:sampleSize>
-        <caom2:exposure>1611.96163904</caom2:exposure>
+        <caom2:sampleSize>225.0</caom2:sampleSize>
+        <caom2:exposure>1196.23539513</caom2:exposure>
       </caom2:time>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="2185e527-0338-478a-926a-464f3e5a4b90">
-          <caom2:uri>ad:ALMACA/uid___A002_Xb945f7_X1551.SCI.J1851+0035.line_spw2.ms.split.cal.tar.gz</caom2:uri>
+        <caom2:artifact caom2:id="a442a4a8-8390-4d76-a635-66611f30eb64">
+          <caom2:uri>ad:ALMACA/uid___A002_Xb945f7_Xc07.SCI.J1851+0035.line_spw2.ms.split.cal.tar.gz</caom2:uri>
+          <caom2:productType>science</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/tar+gzip</caom2:contentType>
+          <caom2:parts/>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+    <caom2:plane caom2:id="e093bec3-517a-472b-9b07-f6b20b29d1f7">
+      <caom2:productID>cont</caom2:productID>
+      <caom2:metaRelease>2016-10-11T22:15:13.000</caom2:metaRelease>
+      <caom2:dataRelease>2018-01-20T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>visibility</caom2:dataProductType>
+      <caom2:calibrationLevel>2</caom2:calibrationLevel>
+      <caom2:provenance>
+        <caom2:name>CASA</caom2:name>
+        <caom2:reference>https://casa.nrao.edu/</caom2:reference>
+      </caom2:provenance>
+      <caom2:position>
+        <caom2:bounds xsi:type="caom2:Circle">
+          <caom2:center>
+            <caom2:cval1>282.9446795833333</caom2:cval1>
+            <caom2:cval2>0.5923230555555556</caom2:cval2>
+          </caom2:center>
+          <caom2:radius>0.007414158192486927</caom2:radius>
+        </caom2:bounds>
+        <caom2:resolution>0.3117685755603343</caom2:resolution>
+        <caom2:timeDependent>false</caom2:timeDependent>
+      </caom2:position>
+      <caom2:energy>
+        <caom2:bounds>
+          <caom2:lower>0.002701570528283626</caom2:lower>
+          <caom2:upper>0.002796972490028097</caom2:upper>
+          <caom2:samples>
+            <caom2:sample>
+              <caom2:lower>0.002701570528283626</caom2:lower>
+              <caom2:upper>0.002796972490028097</caom2:upper>
+            </caom2:sample>
+          </caom2:samples>
+        </caom2:bounds>
+        <caom2:dimension>1</caom2:dimension>
+        <caom2:resolvingPower>3490.4691828821647</caom2:resolvingPower>
+        <caom2:sampleSize>3.937069393393909e-07</caom2:sampleSize>
+        <caom2:bandpassName>Band 3</caom2:bandpassName>
+        <caom2:emBand>Millimeter</caom2:emBand>
+      </caom2:energy>
+      <caom2:time>
+        <caom2:bounds>
+          <caom2:lower>57672.9235494</caom2:lower>
+          <caom2:upper>57672.9541033</caom2:upper>
+          <caom2:samples>
+            <caom2:sample>
+              <caom2:lower>57672.9235494</caom2:lower>
+              <caom2:upper>57672.9541033</caom2:upper>
+            </caom2:sample>
+          </caom2:samples>
+        </caom2:bounds>
+        <caom2:dimension>1</caom2:dimension>
+        <caom2:sampleSize>288.0</caom2:sampleSize>
+        <caom2:exposure>1038.3357773</caom2:exposure>
+      </caom2:time>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="f4127d02-346f-495d-a718-3dab47c385db">
+          <caom2:uri>ad:ALMACA/uid___A002_Xb945f7_Xc07.SCI.J1851+0035.cont.ms.split.cal.tar.gz</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/tar+gzip</caom2:contentType>
