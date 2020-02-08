@@ -78,8 +78,8 @@ from caom2 import Energy, EnergyBand, shape, Interval, Algorithm
 from caom2 import Telescope, Instrument, Target, Proposal, Position
 from caom2 import DerivedObservation, Provenance, Artifact, Plane
 from caom2 import DataProductType, CalibrationLevel, TargetType
-from caom2 import ReleaseType, ProductType, ObservationIntentType
-from caom2 import Time, ObservationURI, Environment, PlaneURI
+from caom2 import ReleaseType, ProductType, ObservationIntentType, Point
+from caom2 import Time, ObservationURI, Environment, PlaneURI, TargetPosition
 
 from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
@@ -200,7 +200,7 @@ def _get_band_name(override):
     return 'Band {}'.format(override.get('band'))
 
 
-def build_position(db_content, field_index, md_name):
+def _get_ra_dec(md_name):
     f_names = os.listdir(os.path.dirname(md_name))
     index = -1
     for f_name in f_names:
@@ -220,6 +220,11 @@ def build_position(db_content, field_index, md_name):
     ra = temp[index].split()[3]
     dec = temp[index].split()[4].replace('.', ':', 2)
     result_ra, result_dec = ac.build_ra_dec_as_deg(ra, dec)
+    return result_ra, result_dec
+
+
+def build_position(db_content, field_index, md_name):
+    result_ra, result_dec = _get_ra_dec(md_name)
 
     # HK 19-08-19
     # Looking at the ALMA web archive listing, it claims a 'FOV' (field of
@@ -453,11 +458,8 @@ def build_time(override, almaca_name):
     # could be listed as 'null' to avoid the confusion.
     resolution = None
 
-    # HK 04-02-20
-    # Use time values from the input MS.
-    input_meta_data = read_md_pk(almaca_name.input_ms_metadata)
-    start_date = mc.to_float(input_meta_data.get('start_date'))
-    end_date = mc.to_float(input_meta_data.get('end_date'))
+    start_date = mc.to_float(override.get('start_date'))
+    end_date = mc.to_float(override.get('end_date'))
 
     # HK 14-08-09
     # If 'exposure' is supposed to be the total (useful) exposure time
@@ -477,7 +479,7 @@ def build_time(override, almaca_name):
                 exposure=exposure_time)
 
 
-def _build_obs(override, db_content, fqn, index, almaca_name):
+def _build_obs(override, db_content, fqn, index, almaca_name, md_name):
 
     obs_date = db_content['Observation date'][index]
     if obs_date is None:
@@ -508,6 +510,19 @@ def _build_obs(override, db_content, fqn, index, almaca_name):
                     standard=False,
                     moving=False,
                     target_type=TargetType.OBJECT)
+
+    # HK - 07-02-20
+    # Since we've changed what the base level observation is and can now list
+    # a target name in the 'Derived Observation' base plane, I believe that
+    # means we can also include that target's position under targetPosition.
+    # You've already pulled this info out for the subsequent levels of the
+    # hierarchy under 'position', so it's presumably fairly straightforward to
+    # include the same info here.
+    result_ra, result_dec = _get_ra_dec(md_name)
+    point = Point(result_ra, result_dec)
+    target_position = TargetPosition(coordinates=point,
+                                     coordsys='ICRS',  # from listobs output
+                                     equinox=2000.0)   # a guess by google
 
     # db_content as votable:
     # >>> t.colnames
@@ -575,7 +590,8 @@ def _build_obs(override, db_content, fqn, index, almaca_name):
                                      target=target,
                                      meta_release=obs_date,
                                      algorithm=algorithm,
-                                     environment=environment)
+                                     environment=environment,
+                                     target_position=target_position)
     observation.members.add(
         ObservationURI(
             mc.CaomName.make_obs_uri_from_obs_id('ALMA', 'A001_X88b_X23')))
@@ -687,10 +703,28 @@ def build_observation(db_content, observation, md_name):
     # field_index = 0
     if observation is None:
         observation = _build_obs(override, db_content, fqn, field_index,
-                                 almaca_name)
+                                 almaca_name, md_name)
 
     provenance = get_provenance(almaca_name)
     provenance.inputs.add(PlaneURI('caom:ALMA/A001_X88b_X23/A001_X88b_X23-raw'))
+
+    # HK 07-02-20
+    # I'm looking at the very first entry, A002_Xb999fd_X602.SCI.J1851+0035.
+    # The time bounds listed under all of the second-level planes correspond
+    # to a date of Oct 20, 2016, which agrees with the observing date I pull
+    # up on listobs.  But in the top level plane, the metaRelease date is
+    # listed as Oct 12, 2016.  As we discussed earlier this week, it doesn't
+    # make sense to have the meta data released before the observation was
+    # even taken. Using the 'end time' of the observation that's already
+    # pulled for a lower plane, and putting that as the metaRelease date in
+    # the top level would be a good solution.  NB: since all spws are observed
+    # simultaneously, you'll get the same answer for whichever of the
+    # [high/low]res_spw[X] entries that you pull the information from.
+    input_meta_data = read_md_pk(almaca_name.input_ms_metadata)
+    meta_release = mc.to_float(input_meta_data.get('end_date'))
+    meta_release = time.Time(meta_release, format='mjd')
+    meta_release.format = 'isot'
+    meta_release_dt = mc.make_time(meta_release.value)
 
     release_date = db_content['Release date'][field_index]
     if release_date is None:
@@ -702,7 +736,7 @@ def build_observation(db_content, observation, md_name):
                                               almaca_name.obs_id))
     plane = Plane(product_id=almaca_name.product_id,
                   data_release=release_date,
-                  meta_release=observation.meta_release,
+                  meta_release=meta_release_dt,
                   provenance=provenance)
 
     plane.position = build_position(db_content, field_index, md_name)
@@ -716,6 +750,7 @@ def build_observation(db_content, observation, md_name):
     plane.calibration_level = CalibrationLevel.CALIBRATED
 
     observation.planes.add(plane)
+    observation.meta_release = plane.meta_release
     # TODO hard-coded
     observation.members.add(ObservationURI('caom:ALMA/A001_X88b_X23'))
 

@@ -206,23 +206,6 @@ def test_gen():
             obs_lookup[obs.observation_id] = obs
             obs = obs_lookup.get(almaca_name.obs_id)
 
-        # temp = mc.read_from_file(fqn)
-        # assert temp is not None, 'expected result'
-        # result = {'spectral_windows': []}
-        # for line in temp:
-        #     temp2 = line.split(',', 1)
-        #     if temp2[0].strip() == 'spectral_windows':
-        #         x = temp2[1].strip().split(',')
-        #         count = 0
-        #         while count < len(x):
-        #             y = (mc.to_float(x[count].replace('(', '').replace('[', '').replace(']', '').replace(')', '')),
-        #                  mc.to_float(x[count+1].replace('(', '').replace('[', '').replace(']', '').replace(')', '')))
-        #             count += 2
-        #             result[temp2[0]].append(y)
-        #     elif type(temp2[1]) is str:
-        #         result[temp2[0]] = temp2[1].strip()
-        #     else:
-        #         result[temp2[0]] = temp2[1]
         try:
             obs = ma.build_observation(db_content, obs, fqn)
         except Exception as e:
